@@ -1,0 +1,73 @@
+<openerp>
+    <data>
+        <record model="hr.tables.isr.line" id="0">
+            <field name="limite_inferior">0.01</field>
+            <field name="limite_superior">496.07</field>
+            <field name="cuota_fija">0.00</field>
+            <field name="porcentaje_sobre_excedente">1.92</field>
+        </record>
+        <record model="hr.tables.isr.line" id="1">
+            <field name="limite_inferior">496.08</field>
+            <field name="limite_superior">4,210.41</field>
+            <field name="cuota_fija">9.52</field>
+            <field name="porcentaje_sobre_excedente">6.40</field>
+        </record>
+        <record model="hr.tables.isr.line" id="2">
+            <field name="limite_inferior">4,210.42</field>
+            <field name="limite_superior">7,399.42</field>
+            <field name="cuota_fija">247.24</field>
+            <field name="porcentaje_sobre_excedente">10.88</field>
+        </record>
+        <record model="hr.tables.isr.line" id="3">
+            <field name="limite_inferior">7,399.43</field>
+            <field name="limite_superior">8,601.50</field>
+            <field name="cuota_fija">594.21</field>
+            <field name="porcentaje_sobre_excedente">16.00</field>
+        </record>
+        <record model="hr.tables.isr.line" id="4">
+            <field name="limite_inferior">8,601.51</field>
+            <field name="limite_superior">10,298.35</field>
+            <field name="cuota_fija">786.54</field>
+            <field name="porcentaje_sobre_excedente">17.92</field>
+        </record>
+        <record model="hr.tables.isr.line" id="5">
+            <field name="limite_inferior">10,298.36</field>
+            <field name="limite_superior">20,770.29</field>
+            <field name="cuota_fija">1,090.61</field>
+            <field name="porcentaje_sobre_excedente">21.36</field>
+        </record>
+        <record model="hr.tables.isr.line" id="6">
+            <field name="limite_inferior">20,770.30</field>
+            <field name="limite_superior">32,736.83</field>
+            <field name="cuota_fija">3,327.42</field>
+            <field name="porcentaje_sobre_excedente">23.52</field>
+        </record>
+        <record model="hr.tables.isr.line" id="7">
+            <field name="limite_inferior">32,736.84</field>
+            <field name="limite_superior">62,500.00</field>
+            <field name="cuota_fija">6,141.95</field>
+            <field name="porcentaje_sobre_excedente">30.00</field>
+        </record>
+        <record model="hr.tables.isr.line" id="8">
+            <field name="limite_inferior">62,500.01</field>
+            <field name="limite_superior">83,333.33</field>
+            <field name="cuota_fija">15,070.90</field>
+            <field name="porcentaje_sobre_excedente">32.00</field>
+        </record>
+        <record model="hr.tables.isr.line" id="9">
+            <field name="limite_inferior">83,333.34</field>
+            <field name="limite_superior">250,000.00</field>
+            <field name="cuota_fija">21,737.57</field>
+            <field name="porcentaje_sobre_excedente">34.00</field>
+        </record>
+        <record model="hr.tables.isr.line" id="10">
+            <field name="limite_inferior">250,000.01</field>
+            <field name="limite_superior"></field>
+            <field name="cuota_fija">78,404.23</field>
+            <field name="porcentaje_sobre_excedente">35.00</field>
+        </record>
+    </data>
+</openerp>
+
+
+

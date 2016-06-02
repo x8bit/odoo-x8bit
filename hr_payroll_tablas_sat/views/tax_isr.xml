@@ -1,0 +1,62 @@
+<openerp>
+    <data>
+        <!-- <template id="listing"> -->
+        <!--   <ul> -->
+        <!--     <li t-foreach="objects" t-as="object"> -->
+        <!--       <a t-attf-href="{{ root }}/objects/{{ object.id }}"> -->
+        <!--         <t t-esc="object.display_name"/> -->
+        <!--       </a> -->
+        <!--     </li> -->
+        <!--   </ul> -->
+        <!-- </template> -->
+        <!-- <template id="object"> -->
+        <!--   <h1><t t-esc="object.display_name"/></h1> -->
+        <!--   <dl> -->
+        <!--     <t t-foreach="object._fields" t-as="field"> -->
+        <!--       <dt><t t-esc="field"/></dt> -->
+        <!--       <dd><t t-esc="object[field]"/></dd> -->
+        <!--     </t> -->
+        <!--   </dl> -->
+        <!-- </template> -->
+        <record model="ir.ui.view" id="view_hr_payroll_tablas_isr_form">
+            <field name="name">view.hr.payroll.tablas.isr.form</field>
+            <field name="model">hr.tables.isr.line</field>
+            <field name="arch" type="xml">
+                <form string="ISR Nóminas Form">
+                    <sheet>
+                        <group>
+                            <field name="limite_inferior"/>
+                            <field name="limite_superior"/>
+                            <field name="cuota_fija"/>
+                            <field name="porcentaje_sobre_excedente"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_hr_payroll_tablas_isr_tree" model="ir.ui.view">
+            <field name="name">view.hr.payroll.tablas.isr.tree</field>
+            <field name="model">hr.tables.isr.line</field>
+            <field name="arch" type="xml">
+                <tree string="ISR Nóminas">
+                    <field name="limite_inferior"/>
+                    <field name="limite_superior"/>
+                    <field name="cuota_fija"/>
+                    <field name="porcentaje_sobre_excedente"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_list_ideas" model="ir.actions.act_window">
+            <field name="name">Tabla ISR Nóminas</field>
+            <field name="res_model">hr.tables.isr.line</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="hr_payroll_tablas_sat_root" parent="hr_payroll.menu_hr_payroll_root" name="Tablas SAT" sequence="30"/>
+        <menuitem id="hr_payroll_tablas_sat_isr" parent="hr_payroll_tablas_sat_root" name="ISR" action="action_list_ideas"/>
+
+    </data>
+</openerp>

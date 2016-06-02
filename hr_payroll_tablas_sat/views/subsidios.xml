@@ -1,0 +1,58 @@
+<openerp>
+    <data>
+        <!-- <template id="listing"> -->
+        <!--   <ul> -->
+        <!--     <li t-foreach="objects" t-as="object"> -->
+        <!--       <a t-attf-href="{{ root }}/objects/{{ object.id }}"> -->
+        <!--         <t t-esc="object.display_name"/> -->
+        <!--       </a> -->
+        <!--     </li> -->
+        <!--   </ul> -->
+        <!-- </template> -->
+        <!-- <template id="object"> -->
+        <!--   <h1><t t-esc="object.display_name"/></h1> -->
+        <!--   <dl> -->
+        <!--     <t t-foreach="object._fields" t-as="field"> -->
+        <!--       <dt><t t-esc="field"/></dt> -->
+        <!--       <dd><t t-esc="object[field]"/></dd> -->
+        <!--     </t> -->
+        <!--   </dl> -->
+        <!-- </template> -->
+        <record model="ir.ui.view" id="view_hr_payroll_tablas_subsidio_form">
+            <field name="name">view.hr.payroll.tablas.subsidio.form</field>
+            <field name="model">hr.tables.subsidio.line</field>
+            <field name="arch" type="xml">
+                <form string="Subsidio al empleo Form">
+                    <sheet>
+                        <group>
+                            <field name="limite_inferior"/>
+                            <field name="limite_superior"/>
+                            <field name="subsidio"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_hr_payroll_tablas_subsidio_tree" model="ir.ui.view">
+            <field name="name">view.hr.payroll.tablas.subsidio.tree</field>
+            <field name="model">hr.tables.subsidio.line</field>
+            <field name="arch" type="xml">
+                <tree string="Subsidio empleado">
+                    <field name="limite_inferior"/>
+                    <field name="limite_superior"/>
+                    <field name="subsidio"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="hr_payroll_tablas_sat_subsidios_action" model="ir.actions.act_window">
+            <field name="name">Tabla Subsidio al empleo</field>
+            <field name="res_model">hr.tables.subsidio.line</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem id="hr_payroll_tablas_sat_subsidios" parent="hr_payroll_tablas_sat_root" name="Subsidio al empleo" action="hr_payroll_tablas_sat_subsidios_action"/>
+
+    </data>
+</openerp>

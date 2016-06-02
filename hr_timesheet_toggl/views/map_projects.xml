@@ -1,0 +1,45 @@
+<openerp>
+    <data>
+<!--         <record model="ir.ui.view" id="view_hr_payroll_tablas_isr_form">
+            <field name="name">view.hr.payroll.tablas.isr.form</field>
+            <field name="model">hr.tables.isr.line</field>
+            <field name="arch" type="xml">
+                <form string="ISR Nóminas Form">
+                    <sheet>
+                        <group>
+                            <field name="limite_inferior"/>
+                            <field name="limite_superior"/>
+                            <field name="cuota_fija"/>
+                            <field name="porcentaje_sobre_excedente"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_hr_payroll_tablas_isr_tree" model="ir.ui.view">
+            <field name="name">view.hr.payroll.tablas.isr.tree</field>
+            <field name="model">hr.tables.isr.line</field>
+            <field name="arch" type="xml">
+                <tree string="ISR Nóminas">
+                    <field name="limite_inferior"/>
+                    <field name="limite_superior"/>
+                    <field name="cuota_fija"/>
+                    <field name="porcentaje_sobre_excedente"/>
+                </tree>
+            </field>
+        </record> -->
+
+<!--         <record id="act_hr_timesheet_toggl_form" model="ir.actions.act_window">
+            <field name="name">Relación de proyectos Toggl - ERP</field>
+            <field name="res_model">hr.tables.isr.line</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem name="Toggl Settings" id="menu_hr_timesheet_toggl" sequence="100" 
+            parent="hr_attendance.timesheet_menu_root" groups="base.group_configuration" />
+        <menuitem id="menu_hr_timesheet_toggl_projects" parent="menu_hr_timesheet_toggl" name="Proyectos" sequence="10" action="act_hr_timesheet_toggl_form"/>
+ -->
+    </data>
+</openerp>
