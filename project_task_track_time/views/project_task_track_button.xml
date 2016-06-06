@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="project_task_track_button_view_inherit1" model="ir.ui.view">
+            <field name="name">Track button Inherit 1</field>
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="project.view_task_kanban"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@widget='priority']" position="after">
+                    <button name="trackTime" type="object" string="Track" class="fa fa-play-circle" />
+                </xpath>
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="project_task_track_button_view_description">
+            <field name="name">project.task.tracking.form</field>
+            <field name="model">project.task.tracking</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Cambiar descripción">
+                    <sheet>
+                        <group string="Modificar la descripción de la tarea">
+                            <field name="description" />
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</openerp>
