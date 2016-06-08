@@ -35,22 +35,52 @@ class project_task_track_button(models.Model):
 class project_task_track_time(models.Model):
 	_inherit = 'project.task'
 
+	# is_being_tracked_by_user = fields.Float(compute='_is_being_tracked')
+
+	# @api.depends('value', 'tax')
+	# def _is_being_tracked(self):
+	#     for record in self:
+	#         record.total = record.value + record.value * record.tax
+
+	@api.model
+	def stopTrackingTime(self, cr, user, context=None):
+		_logger.info("click stopTrackingTime")
+
+		uid = user['uid']
+		tracking = self.env['project.task.tracking'].search([('create_uid', '=', uid)], limit=1)
+
+		if tracking:
+			date_now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+			tracked_time = datetime.strptime(date_now, '%Y-%m-%d %H:%M:%S') - datetime.strptime(tracking.create_date, '%Y-%m-%d %H:%M:%S')
+			is_older = datetime.strptime(date_now, '%Y-%m-%d %H:%M:%S') > datetime.strptime(tracking.create_date, '%Y-%m-%d %H:%M:%S')
+
+			if tracked_time.seconds > 60 and is_older:
+				task = self.browse(cr)
+
+				data = {
+					'date' : tracking.create_date,
+					'user_id' : uid,
+					'name' : tracking.description,
+					'account_id' : task.analytic_account_id.id,
+					'unit_amount' : (tracked_time.seconds / 60) / 60.00,
+					'is_timesheet' : 1,
+					'task_id': task.id,
+				}
+
+				task.timesheet_ids.create(data)
+
+			#borrar tracking
+			tracking.unlink()
+
 	@api.model
 	def trackTime(self, cr, user, context=None):
 		_logger.info("click trackTime")
 
-		uid = user['uid']
 		task = self.browse(cr)
 
-		_logger.info(task.id)
-		_logger.info(task.analytic_account_id.id)
-		
-		tracking = self.env['project.task.tracking'].search([('create_uid', '=', uid)], limit=1)
-		if tracking:
-			_logger.info("YA hay un registro: %d", tracking.id)
-			self.stopTimer(uid, tracking, task)
+		self.stopTrackingTime(cr, user, context)
 
-		new_tracking = self.env['project.task.tracking'].create({'task_id': task.id, 'description': 'Timed tracking'}).id
+		tracking = self.env['project.task.tracking'].create({'task_id': task.id, 'description': 'Timed tracking'}).id
 		view_id = self.env.ref('project_task_track_time.project_task_track_button_view_description').id
 
 		return {
@@ -58,7 +88,7 @@ class project_task_track_time(models.Model):
 			"res_model": "project.task.tracking",
 			"views": [[view_id, "form"]],
 			"view_id": view_id,
-			"res_id": new_tracking,
+			"res_id": tracking,
 			"target": "new",
 			"context": context,
 			'flags': {
@@ -67,29 +97,3 @@ class project_task_track_time(models.Model):
 				}
 			},
 		}
-
-	def stopTimer(self, uid, tracking, task):
-		#insertar timesheet de la diferencia del create_date y el date_now
-		date_now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-		tracked_time = datetime.strptime(date_now, '%Y-%m-%d %H:%M:%S') - datetime.strptime(tracking.create_date, '%Y-%m-%d %H:%M:%S')
-		is_older = datetime.strptime(date_now, '%Y-%m-%d %H:%M:%S') > datetime.strptime(tracking.create_date, '%Y-%m-%d %H:%M:%S')
-
-		if tracked_time.seconds > 60 and is_older:
-			data = {
-				'date' : tracking.create_date,
-				'user_id' : uid,
-				'name' : tracking.description,
-				'account_id' : task.analytic_account_id.id,
-				'unit_amount' : (tracked_time.seconds / 60) / 60.00,
-				'is_timesheet' : 1,
-				'task_id': task.id,
-			}
-
-			_logger.info(tracked_time.seconds)
-			_logger.info(data)
-			task.timesheet_ids.create(data)
-
-		#borrar tracking
-		tracking.unlink()
-
-

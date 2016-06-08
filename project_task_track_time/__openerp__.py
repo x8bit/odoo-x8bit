@@ -13,7 +13,7 @@
         'views/project_task_track_button.xml',
     ],
     # data files containing optionally loaded demonstration data
-    'qweb': [
-        'static/src/xml/switch_company.xml',
-    ],
+    # 'qweb': [
+    #     'static/src/xml/switch_company.xml',
+    # ],
 }

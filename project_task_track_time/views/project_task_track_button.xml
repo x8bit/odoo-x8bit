@@ -7,7 +7,8 @@
             <field name="inherit_id" ref="project.view_task_kanban"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@widget='priority']" position="after">
-                    <button name="trackTime" type="object" string="Track" class="fa fa-play-circle" />
+                    <button name="trackTime" type="object" string="Track" class="fa fa-play" />
+                    <button name="stopTrackingTime" type="object" string="Track" class="fa fa-stop" />
                 </xpath>
             </field>
         </record>
