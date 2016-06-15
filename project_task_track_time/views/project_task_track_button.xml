@@ -7,8 +7,9 @@
             <field name="inherit_id" ref="project.view_task_kanban"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@widget='priority']" position="after">
-                    <button name="trackTime" type="object" string="Track" class="fa fa-play" />
-                    <button name="stopTrackingTime" type="object" string="Track" class="fa fa-stop" />
+                    <field name="is_being_tracked_by_user" invisible="1" />
+                    <button name="trackTime" type="object" string="Track" class="fa fa-play" attrs="{'invisible': [('is_being_tracked_by_user', '=', True)]}"/>
+                    <button name="stopTrackingTime" type="object" string="Track" class="fa fa-stop" attrs="{'invisible': [('is_being_tracked_by_user', '=', False)]}" />
                 </xpath>
             </field>
         </record>
@@ -28,5 +29,11 @@
                 </form>
             </field>
         </record>
+
+        <template id="assets_backend" name="project_task_track_time assets" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/project_task_track_time/static/src/js/show_tracking.js"></script>
+            </xpath>
+        </template>
     </data>
 </openerp>

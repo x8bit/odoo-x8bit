@@ -35,15 +35,16 @@ class project_task_track_button(models.Model):
 class project_task_track_time(models.Model):
 	_inherit = 'project.task'
 
-	# is_being_tracked_by_user = fields.Float(compute='_is_being_tracked')
+	is_being_tracked_by_user = fields.Boolean(compute='_is_being_tracked')
 
-	# @api.depends('value', 'tax')
-	# def _is_being_tracked(self):
-	#     for record in self:
-	#         record.total = record.value + record.value * record.tax
+	# @api.depends('id')
+	def _is_being_tracked(self):
+		for record in self:
+			tracking = self.env['project.task.tracking'].search([('create_uid', '=', self._uid),('task_id', '=', record.id)], limit=1)
+			record.is_being_tracked_by_user = tracking
 
 	@api.model
-	def stopTrackingTime(self, cr, user, context=None):
+	def stopTrackingTime(self, user):
 		_logger.info("click stopTrackingTime")
 
 		uid = user['uid']
@@ -55,7 +56,7 @@ class project_task_track_time(models.Model):
 			is_older = datetime.strptime(date_now, '%Y-%m-%d %H:%M:%S') > datetime.strptime(tracking.create_date, '%Y-%m-%d %H:%M:%S')
 
 			if tracked_time.seconds > 60 and is_older:
-				task = self.browse(cr)
+				task = tracking.task_id
 
 				data = {
 					'date' : tracking.create_date,
@@ -70,6 +71,7 @@ class project_task_track_time(models.Model):
 				task.timesheet_ids.create(data)
 
 			#borrar tracking
+			tracking.task_id.write({'is_being_tracked_by_user': False})
 			tracking.unlink()
 
 	@api.model
@@ -78,7 +80,7 @@ class project_task_track_time(models.Model):
 
 		task = self.browse(cr)
 
-		self.stopTrackingTime(cr, user, context)
+		self.stopTrackingTime(user)
 
 		tracking = self.env['project.task.tracking'].create({'task_id': task.id, 'description': 'Timed tracking'}).id
 		view_id = self.env.ref('project_task_track_time.project_task_track_button_view_description').id
