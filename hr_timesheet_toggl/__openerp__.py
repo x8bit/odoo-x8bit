@@ -2,7 +2,7 @@
     'name': "Modulo de conexión con toggl",
     'version': '1.0',
     'depends': ['hr'],
-    'author': "Juan Carlos del Valle",
+    'author': "X8BIT SA DE CV",
     'category': 'Timesheet',
     'description': """
     Conexión con toggl

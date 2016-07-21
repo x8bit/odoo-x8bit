@@ -52,12 +52,12 @@ class hr_employee(models.Model):
 	@api.model
 	def getIMSS(self, contract):
 		company = self.env.user.company_id
-		dias = 15
+		dias = 15 # traer cuantos dias tiene el mes de la nomina que se esta generando y dividir entre 2
 		a1 = (contract.wage - (company.salario_minimo * 3)) * 0.00400 * dias
 		a2 = contract.wage * 0.00375 * dias
 		a3 = contract.wage * 0.00250 * dias
 		a4 = contract.wage * 0.00625 * dias
-		a5 = contract.wage * 0.01125 * dias
+		a5 = contract.wage * 0.01125 * dias # este se paga bimestralmente
 		return a1 + a2 + a3 + a4 + a5
 
 

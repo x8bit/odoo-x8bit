@@ -2,7 +2,7 @@
     'name': "Modulo que agrega boton de registro de tiempo en tareas de proyectos",
     'version': '1.0',
     'depends': ['project', 'web'],
-    'author': "Juan Carlos del Valle",
+    'author': "X8BIT SA DE CV",
     'category': 'Project',
     'description': """
     Modulo que agrega boton de registro de tiempo en tareas de proyectos

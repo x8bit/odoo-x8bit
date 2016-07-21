@@ -2,7 +2,7 @@
     'name': "Agregar campos a contrato",
     'version': '1.0',
     'depends': ['hr'],
-    'author': "Juan Carlos del Valle",
+    'author': "X8BIT SA DE CV",
     'category': 'Contracts',
     'description': """
     Agrega campos a contrato para calculo de nominas

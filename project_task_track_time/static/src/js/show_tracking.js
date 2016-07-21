@@ -156,7 +156,9 @@ odoo.define('web.project_task_track_time',function (require) {
                     if(curr_tracking != tracking_time[0].id) {
                         curr_tracking = tracking_time[0].id;
                         self._fetch('project.task',[],[['id','=',tracking_time[0].task_id[0]]]).then(function(task){
-                            self._tracking(task, tracking_time);
+                            if(task.length) {
+                                self._tracking(task, tracking_time);
+                            }
                         });
                     }
                 } else {

@@ -57,7 +57,7 @@ class project_task_track_time(models.Model):
 
 			if tracked_time.seconds > 60 and is_older:
 				task = tracking.task_id
-
+				
 				data = {
 					'date' : tracking.create_date,
 					'user_id' : uid,
@@ -67,6 +67,7 @@ class project_task_track_time(models.Model):
 					'is_timesheet' : 1,
 					'task_id': task.id,
 				}
+				_logger.info(data)
 
 				task.timesheet_ids.create(data)
 

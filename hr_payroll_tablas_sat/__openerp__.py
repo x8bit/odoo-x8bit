@@ -2,7 +2,7 @@
     'name': "Modulo de tablas para el calculo de impuestos",
     'version': '1.0',
     'depends': ['hr_payroll'],
-    'author': "Juan Carlos del Valle",
+    'author': "X8BIT SA DE CV",
     'category': 'Accounting',
     'description': """
     Tablas para el calculo de impuestos sobre nómina
