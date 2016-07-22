@@ -1,0 +1,14 @@
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="view_res_company_form_inherit_certs">
+            <field name="name">view.account.invoice.form.inherit.facturae</field>
+            <field name="inherit_id" ref="account.invoice_form"/>
+            <field name="model">account.invoice</field>
+            <field name="arch" type="xml">
+                <button name="436" position="after">
+                    <button name="gen_facturae" type="object" states="open" groups="account.group_account_invoice" class="oe_highlight"/>
+                </button>
+            </field>
+        </record>
+    </data>
+</openerp>
