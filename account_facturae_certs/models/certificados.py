@@ -17,7 +17,6 @@ class res_company(models.Model):
 
 	@api.model
 	def generateNumCER(self, cr):
-		_logger.info("----------> generateNumCER")
 		company = self.browse(cr)
 		
 		archivo_cer_path = config.filestore(self.env.cr.dbname) + "/" + company.achivo_cer.store_fname
@@ -33,7 +32,6 @@ class res_company(models.Model):
 
 	@api.model
 	def generatePEM(self, cr):
-		_logger.info("----------> generatePEM")
 		company = self.browse(cr)
 		archivo_cer_path = config.filestore(self.env.cr.dbname) + "/" + company.achivo_cer.store_fname
 		archivo_key_path = config.filestore(self.env.cr.dbname) + "/" + company.achivo_key.store_fname

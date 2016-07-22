@@ -24,55 +24,18 @@
                                 <label for="numero_certificado"/>
                                 <field name="numero_certificado"/>
                             </div>
-                            <button name="generateNumCER" type="object" class="btn btn-sm btn-primary" string="Obtener serie del certificado"/>
+                            <button name="generateNumCER" type="object" class="btn btn-sm btn-primary" string="Obtener serie del certificado" attrs="{'invisible': [('achivo_cer', '=', False)]}"/>
                         </group>
                         <group string="Archivo PEM ( Generado a partir del CER y KEY )">
                             <div>
                                 <label for="achivo_pem"/>
                                 <field name="achivo_pem" domain="[('res_model', '=', 'res.company'),('res_id','=',id), ('mimetype','=','application/octet-stream')]"/>
                             </div>
-                            <button name="generatePEM" type="object" class="btn btn-sm btn-primary" string="Generar PEM"/>
+                            <button name="generatePEM" type="object" class="btn btn-sm btn-primary" string="Generar PEM" attrs="{'invisible': ['|',('achivo_cer', '=', False),'|',('achivo_key', '=', False),('cer_password', '=', False)]}"/>
                         </group>
-                        <!-- <field colspan="4" name="cif_file" widget="image"/> -->
                     </page>
                 </xpath>
             </field>
         </record>
-<!-- 
-        <record id="facturacion_electronica" model="ir.ui.view">
-            <field name="name">Datos para facturación electrónica</field>
-            <field name="model">factelect.config.settings</field>
-            <field name="arch" type="xml">
-                <form string="Datos para facturación electrónica" class="oe_form_configuration">
-                    <header>
-                        <button string="Save" type="object" name="execute" class="oe_highlight"/>
-                        or
-                        <button string="Cancel" type="object" name="cancel" class="oe_link"/>
-                    </header>
-                    <group string="Datos para facturación electrónica">
-                        <div>
-                            <label for="achivo_cer"/>
-                            <field name="achivo_cer" colspan="2"/>
-                        </div>
-                        <div>
-                            <label for="achivo_key"/>
-                            <field name="achivo_key" colspan="2"/>
-                        </div>
-                        <div>
-                            <label for="cer_password"/>
-                            <field name="cer_password" colspan="2"/>
-                        </div>
-                    </group>
-                </form>
-            </field>
-        </record>
-        <record id="facturacion_elect_parameters_action" model="ir.actions.act_window">
-            <field name="name">Datos para facturación electrónica</field>
-            <field name="res_model">factelect.config.settings</field>
-            <field name="view_id" ref="facturacion_electronica"/>
-            <field name="view_mode">form</field>
-            <field name="target">inline</field>
-        </record>
-        <menuitem id="facturacion_elect_parameters_menu" name="Facturación electrónica" parent="account.menu_finance_configuration" action="facturacion_elect_parameters_action" groups="base.group_configuration"/> -->
     </data>
 </openerp>
