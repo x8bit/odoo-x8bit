@@ -3,6 +3,7 @@
     'version': '1.0',
     'depends': ['project'],
     'author': "X8BIT SA DE CV",
+    'website': 'www.x8bit.com',
     'category': 'Project',
     'description': """
     Módulo que hace visibles las fechas de inicio y fin de los proyectos

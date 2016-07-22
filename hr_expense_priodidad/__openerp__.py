@@ -3,6 +3,7 @@
     'version': '1.0',
     'depends': ['hr_expense'],
     'author': "X8BIT SA DE CV",
+    'website': 'www.x8bit.com',
     'category': 'Recursos Humanos',
     'description': """
     Módulo que agregua un checkbox de urgente a un gasto para poder diferenciarlo de los demás

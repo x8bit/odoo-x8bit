@@ -3,6 +3,7 @@
     'version': '1.0',
     'depends': ['project', 'web'],
     'author': "X8BIT SA DE CV",
+    'website': 'www.x8bit.com',
     'category': 'Project',
     'description': """
     Modulo que agrega boton de registro de tiempo en tareas de proyectos

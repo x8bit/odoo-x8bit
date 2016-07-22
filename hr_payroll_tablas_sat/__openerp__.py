@@ -3,6 +3,7 @@
     'version': '1.0',
     'depends': ['hr_payroll'],
     'author': "X8BIT SA DE CV",
+    'website': 'www.x8bit.com',
     'category': 'Accounting',
     'description': """
     Tablas para el calculo de impuestos sobre nómina

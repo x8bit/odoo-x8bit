@@ -3,6 +3,7 @@
     'version': '1.0',
     'depends': ['hr'],
     'author': "X8BIT SA DE CV",
+    'website': 'www.x8bit.com',
     'category': 'Timesheet',
     'description': """
     Conexión con toggl
