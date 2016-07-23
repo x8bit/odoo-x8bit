@@ -6,8 +6,19 @@
             <field name="model">account.invoice</field>
             <field name="arch" type="xml">
                 <button name="436" position="after">
-                    <button name="gen_facturae" type="object" states="open" groups="account.group_account_invoice" class="oe_highlight"/>
+                    <button name="genFacturae" type="object" states="open" groups="account.group_account_invoice" class="oe_highlight" string="Generar Factura"/>
                 </button>
+            </field>
+        </record>
+
+        <record id="view_res_company_tree_inherit_showjournal" model="ir.ui.view">
+            <field name="name">view.account.invoice.tree.inherit.facturae</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='journal_id']" position="attributes">
+                    <attribute name="invisible">0</attribute>
+                </xpath>
             </field>
         </record>
     </data>

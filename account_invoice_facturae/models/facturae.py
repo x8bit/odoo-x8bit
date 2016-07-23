@@ -1,5 +1,8 @@
 from openerp import models, fields, api
 from openerp.tools import config
+# import xml.etree.cElementTree as ET
+from lxml import etree as ET
+import xml.dom.minidom as minidom
 # from subprocess import check_output
 # import base64, os
 
@@ -9,59 +12,44 @@ _logger = logging.getLogger(__name__)
 class account_invoice(models.Model):
 	_inherit = 'account.invoice'
 
-	
+	@api.model
+	def genFacturae(self, cr):
+		invoice = self.browse(cr)
 
-	# achivo_cer = fields.Many2one("ir.attachment", string="Archivo .CER")
-	# achivo_key = fields.Many2one("ir.attachment", string="Archivo .KEY")
-	# achivo_pem = fields.Many2one("ir.attachment", string="Archivo .PEM")
-	# cer_password = fields.Char(string="Password para el CSD:")
-	# numero_certificado = fields.Char(string="Serie del certificado", readonly=True)
+		namespaces =  {
+			'cfdi' : "http://www.sat.gob.mx/cfd/3",
+			'xsi' : "http://www.w3.org/2001/XMLSchema-instance",
+		}
 
-	# @api.model
-	# def generateNumCER(self, cr):
-	# 	company = self.browse(cr)
-		
-	# 	archivo_cer_path = config.filestore(self.env.cr.dbname) + "/" + company.achivo_cer.store_fname
+		root = ET.Element('{%s}Comprobante' % namespaces['cfdi'], nsmap=namespaces)
+		root.set("{%s}schemaLocation" % namespaces['xsi'], "http://www.sat.gob.mx/cfd/3 http://www.sat.gob.mx/sitio_internet/cfd/3/cfdv32.xsd")
+		root.set("version", "3.2")
+		arr = invoice.number.split("-")
+		root.set("serie", arr[0])
+		root.set("folio", arr[1])
+		root.set("formaDePago", "PAGO EN UNA SOLA EXHIBICION")
+		root.set("Moneda", "PESO MXN")
+		#root.set("Moneda", "DOLAR USD")
+		root.set("tipoDeComprobante", "ingreso")
 
-	# 	out = check_output(["openssl", "x509", "-inform", "DER", "-in", archivo_cer_path, "-serial"])
-	# 	serial_numbers = out.replace("serial=", "").split("\n")[0]
-	# 	numero_certificado = ""
-	# 	for idx, num in enumerate(serial_numbers):
-	# 		if(idx % 2):
-	# 			numero_certificado = numero_certificado + num
+		pay_method_id = invoice.pay_method_id.code
+		cta_pago = invoice.acc_payment.acc_number[-4:]
 
-	# 	company.numero_certificado = numero_certificado
+		root.set("metodoDePago", pay_method_id)
+		root.set("LugarExpedicion", invoice.company_id.city)
+		root.set("NumCtaPago", cta_pago)
 
-	# @api.model
-	# def generatePEM(self, cr):
-	# 	company = self.browse(cr)
-	# 	archivo_cer_path = config.filestore(self.env.cr.dbname) + "/" + company.achivo_cer.store_fname
-	# 	archivo_key_path = config.filestore(self.env.cr.dbname) + "/" + company.achivo_key.store_fname
-	# 	archivo_pem_path = config.filestore(self.env.cr.dbname) + "/" + company.achivo_key.store_fname + ".pem"
+		root.set("condicionesDePago", invoice.payment_term_id.name)
+		root.set("subTotal", unicode(invoice.amount_untaxed))
+		root.set("total", unicode(invoice.amount_total))
 
-	# 	try:
-	# 	    os.remove(archivo_pem_path)
-	# 	except OSError:
-	# 	    pass
+		emisor = ET.SubElement(root, '{%s}Emisor' % namespaces['cfdi'])
+		receptor = ET.SubElement(root, '{%s}Receptor' % namespaces['cfdi'])
+		conceptos = ET.SubElement(root, '{%s}Conceptos' % namespaces['cfdi'])
+		impuestos = ET.SubElement(root, '{%s}Impuestos' % namespaces['cfdi'])
 
-	# 	check_output(["openssl", "x509", "-inform", "DER", "-in", archivo_cer_path, "-outform", "PEM", "-pubkey", "-out", archivo_pem_path])
-	# 	check_output(["openssl", "x509", "-in", archivo_pem_path, "-serial", "-noout"])
-	# 	check_output(["openssl", "pkcs8", "-inform", "DER", "-in", archivo_key_path, "-passin", "pass:" + company.cer_password, "-out", archivo_pem_path])
 
-	# 	cert_file = open(archivo_pem_path, 'r')
-	# 	pem_datas = base64.b64encode(cert_file.read())
 
-	# 	attachment_ids = self.env['ir.attachment'].search([('res_model', '=', 'res.company'),('res_id','=',company.id), ('mimetype','=','application/octet-stream')])
-	# 	attachment_ids.unlink()
-
-	# 	pem_file = company.achivo_key.copy()
-	# 	pem_file.write({
-	# 		'mimetype':'application/octet-stream',
-	# 		'datas_fname' : pem_file.datas_fname + ".pem",
-	# 		'display_name' : pem_file.display_name + ".pem",
-	# 		'name' : pem_file.name + ".pem",
-	# 		'datas' : pem_datas
-	# 		})
-	# 	company.achivo_pem = pem_file
-
-		os.remove(archivo_pem_path)
+		xml_str = ET.tostring(root)
+		xml = minidom.parseString(xml_str.encode("utf-8"))
+		_logger.info(xml.toprettyxml())
