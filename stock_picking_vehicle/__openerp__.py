@@ -1,16 +1,16 @@
 {
-    'name': "Módulo que agrega un porcentaje de avance del proyecto",
+    'name': "Módulo que agregua un combo de vehiculo al modulo stock.picking",
     'version': '1.0',
-    'depends': ['project'],
+    'depends': ['stock'],
     'author': "X8BIT SA DE CV",
     'category': 'Recursos Humanos',
     'description': """
-    Módulo que agrega un porcentaje de avance del proyecto
+    Módulo que agregua un combo de vehiculo al modulo stock.picking
     """,
     # data files always loaded at installation
     'data': [
         'security/ir.model.access.csv',
-        'views/project_project_percentage.xml',
+        'views/stock_picking_vehicle.xml',
     ],
     'installable': True,
     'auto_install': False,
