@@ -1,0 +1,48 @@
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="view_x8_flete_vehicle_form">
+            <field name="name">view.x8.flete.vehicle.form</field>
+            <field name="model">x8.flete.vehicle</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="chofer"/>
+                            <field name="num_econ"/>
+                            <field name="description"/>
+                            <field name="capacidad"/>
+                            <field name="proyect_id"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_x8_flete_vehicle_tree" model="ir.ui.view">
+            <field name="name">view.x8.flete.vehicle.tree</field>
+            <field name="model">x8.flete.vehicle</field>
+            <field name="arch" type="xml">
+                <tree string="Vehiculos recepciones">
+                    <field name="name"/>
+<!--                     <field name="chofer"/> -->
+                    <field name="num_econ"/>
+                    <!-- <field name="description"/> -->
+                    <field name="capacidad"/>
+                    <field name="proyect_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="vehicles_list" model="ir.actions.act_window">
+            <field name="name">Tabla Vehículos</field>
+            <field name="res_model">x8.flete.vehicle</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="x8_recepciones_root_menu" name="Recepciones" sequence="30"/>
+        <menuitem id="x8_vehicles_menu" parent="x8_recepciones_root_menu" name="Vehículos" action="vehicles_list"/>
+
+    </data>
+</openerp>

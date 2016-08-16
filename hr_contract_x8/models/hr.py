@@ -19,35 +19,25 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.     
 #
 ##############################################################################
-from openerp import models, fields, api
-from TogglPy import Toggl
+from openerp import models, api
 import logging
+_logger = logging.getLogger(__name__)
 
-class hr_employee_toggl(models.Model):
-	#_name = 'hr.employee'
+class hr_employee(models.Model):
 	_inherit = 'hr.employee'
 
-	#fields
-	toggl_user_id = fields.Integer(string="Usuario Toggl")
-
 	@api.model
-	def getTrackedHours(self, payslip, tag_ids = False):
-		# _logger = logging.getLogger(__name__)
-		toggl = Toggl()
-		toggl.setAPIKey("83aa5f3cd6854b57221a0df67a366d3a")
-		data = {
-			'grouping'     : "users",
-			'subgrouping'  : "projects",
-			'workspace_id' : 709530,
-			'since'        : payslip.date_from,
-			'until'        : payslip.date_to,
-			'order_field'  : "duration",
-			'order_desc'   : "on",
-			'user_ids'     : self.toggl_user_id,
-		}
+	def getBonosVenta(self, payslip):
+		invoice = self.env['account.invoice']
+		invoices = invoice.search([('user_id', '=', self.user_id.id), 
+			('state','=','paid'),
+			('payment_move_line_ids.date','>=',payslip.date_from),
+			('payment_move_line_ids.date','<=',payslip.date_to)])
 
-		if tag_ids != False:
-			data['tag_ids'] = tag_ids
+		_logger.info("getBonosVenta")
+		_logger.info(invoices)
 
-		response = toggl.getSummaryReport(data)
-		return round( response['total_grand'] / 1000.00 / 60.00 /60.00 )
+		for invoice in invoices:
+			_logger.info(invoice.amount_untaxed)
+
+		return 300.00
