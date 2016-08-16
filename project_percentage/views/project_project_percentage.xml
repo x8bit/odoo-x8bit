@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="project_project_percentage_form_inherit1" model="ir.ui.view">
+            <field name="name">Project percentage</field>
+            <field name="model">project.project</field>
+            <field name="inherit_id" ref="project.edit_project"/>
+            <field name="arch" type="xml">
+                <field name="user_id" position="after">
+                    <field name="porcentaje" />
+                </field>
+            </field>
+        </record> 
+    </data>
+</openerp>        
