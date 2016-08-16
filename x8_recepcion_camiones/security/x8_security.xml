@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+         <record id="x8_vehicle_user" model="res.groups">
+             <field name="name">Vehicle User</field>
+             <field name="category_id" ref="x8.recepcion_camiones"/>
+         </record>
+
+        <record id="x8_vehicle_manager" model="res.groups">
+            <field name="name">Vehicle Manager</field>
+            <field name="category_id" ref="x8.recepcion_camiones"/>
+        </record>
+
+    </data>
+</openerp>

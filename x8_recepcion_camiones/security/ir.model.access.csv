@@ -1,3 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-hr_tables_subsidio_line_manager,hr.tables.subsidio.line.manager,model_hr_tables_subsidio_line,base.group_hr_manager,1,1,1,1
-hr_tables_isr_line_manager,hr.tables.isr.line.manager,model_hr_tables_isr_line,base.group_hr_manager,1,1,1,1
+x8_fletes_vehicle_manager,x8.flete.vehicle.manager,model_x8_fletes_vehicle,x8_vehicle_user,1,0,0,0
+x8_fletes_vehicle_manager,x8.flete.vehicle.manager,model_x8_fletes_vehicle,x8_vehicle_manager,1,1,1,1

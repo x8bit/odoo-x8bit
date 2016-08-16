@@ -10,6 +10,7 @@
     """,
     # data files always loaded at installation
     'data': [
+        'security/x8_security.xml',
         'security/ir.model.access.csv',
         'views/fletes_vehicle.xml',
     ],
