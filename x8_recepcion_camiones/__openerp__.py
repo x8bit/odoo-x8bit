@@ -12,6 +12,9 @@
     'data': [
         'security/x8_security.xml',
         'security/ir.model.access.csv',
+        'views/recepcion_view.xml',
         'views/fletes_vehicle.xml',
+        'views/fletes_material.xml',
+        'views/fletes_checador.xml',
     ],
 }
