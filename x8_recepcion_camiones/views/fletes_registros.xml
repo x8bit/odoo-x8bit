@@ -1,0 +1,56 @@
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="view_x8_flete_material_form">
+            <field name="name">view.x8.flete.material.form</field>
+            <field name="model">x8.flete.material</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <sheet>
+                        <group>
+                            <group string="Generales">
+                                <field name="name"/>
+                                <field name="product_id"/>
+                                <field name="precio" widget="monetary"/>
+                            </group>
+                            <group string="Procedencia">
+                                <field name="proveedor"/>
+                                <field name="banco"/>
+                                <field name="distancia"/>
+                            </group>
+                            <group string="Costos flete">
+                                <field name="precio_flete" widget="monetary"/>
+                            </group>
+                            <group string="Proyecto">
+                                <field name="project_id"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_x8_flete_material_tree" model="ir.ui.view">
+            <field name="name">view.x8.flete.material.tree</field>
+            <field name="model">x8.flete.material</field>
+            <field name="arch" type="xml">
+                <tree string="Vehiculos recepciones">
+                    <field name="name"/>
+                    <field name="product_id"/>
+                    <field name="banco"/>
+                    <field name="proveedor"/>
+                    <field name="project_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="materials_list" model="ir.actions.act_window">
+            <field name="name">Tabla Materiales</field>
+            <field name="res_model">x8.flete.material</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="x8_materials_menu" parent="x8_recepciones_root_menu" name="Materiales" action="materials_list" sequence="8"/>
+
+    </data>
+</openerp>

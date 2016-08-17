@@ -17,5 +17,6 @@
         'views/fletes_vehicle.xml',
         'views/fletes_material.xml',
         'views/fletes_checador.xml',
+        'views/fletes_registros.xml',
     ],
 }
