@@ -22,8 +22,17 @@
                             </group>
                             <group string="Proyecto">
                                 <field name="project_id"/>
+                                <field name="zonas" 
+                                    widget="many2many_tags" 
+                                    options="{'no_create_edit': True, 'no_quick_create': True}"
+                                    domain="[('project_id','=',project_id)]"/>
                             </group>
                         </group>
+<!--                         <notebook colspan="4" position="inside">
+                            <page name="checadores" string="Zonas">
+                                <field name="zonas" widget="many2many_tags" options="{'no_create_edit': True}" domain="[('project_id','=',project_id)]"/>
+                            </page>
+                        </notebook> -->
                     </sheet>
                 </form>
             </field>
