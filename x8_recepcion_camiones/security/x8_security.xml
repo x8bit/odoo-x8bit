@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data noupdate="0">
-        <record model="ir.module.category" id="x8.recepcion_camiones">
-            <field name="name">Recepción de camiones</field>
-            <field name="description">Usuario: Solo lectura. Manager: Lectura y escritura</field>
-            <field name="sequence">999</field>
-        </record>
-
-        <record id="x8_vehicle_user" model="res.groups">
-           <field name="name">Usuario</field>
-           <field name="category_id" ref="x8.recepcion_camiones"/>
-       </record>
-
-       <record id="x8_vehicle_manager" model="res.groups">
-        <field name="name">Manager</field>
-        <field name="category_id" ref="x8.recepcion_camiones"/>
+  <data noupdate="0">
+    <record model="ir.module.category" id="module_x8_recepcion_camiones">
+      <field name="name">Recepción de camiones</field>
+      <field name="description">Usuario: Solo lectura. Manager: Lectura y escritura</field>
+      <field name="sequence">999</field>
     </record>
+
+    <record id="x8_vehicle_user" model="res.groups">
+     <field name="name">Usuario</field>
+     <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+     <field name="category_id" ref="module_x8_recepcion_camiones"/>
+   </record>
+
+   <record id="x8_vehicle_manager" model="res.groups">
+    <field name="name">Manager</field>
+    <field name="implied_ids" eval="[(4, ref('x8_vehicle_user'))]"/>
+    <field name="users" eval="[(4, ref('base.user_root'))]"/>
+    <field name="category_id" ref="module_x8_recepcion_camiones"/>
+  </record>
 
 </data>
 </openerp>

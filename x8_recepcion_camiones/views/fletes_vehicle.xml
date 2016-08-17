@@ -41,7 +41,7 @@
             <field name="view_mode">tree,form</field>
         </record>
 
-        <menuitem id="x8_recepciones_root_menu" name="Recepciones" sequence="30"/>
+        <menuitem id="x8_recepciones_root_menu" name="Recepciones" sequence="30" groups="x8_vehicle_manager,x8_vehicle_user"/>
         <menuitem id="x8_vehicles_menu" parent="x8_recepciones_root_menu" name="Vehículos" action="vehicles_list"/>
 
     </data>

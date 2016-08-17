@@ -1,3 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-x8_fletes_vehicle_manager,x8.flete.vehicle.manager,model_x8_fletes_vehicle,x8_vehicle_user,1,0,0,0
-x8_fletes_vehicle_manager,x8.flete.vehicle.manager,model_x8_fletes_vehicle,x8_vehicle_manager,1,1,1,1
+x8_fletes_vehicle_user,x8.flete.vehicle.user,model_x8_flete_vehicle,x8_vehicle_user,1,0,0,0
+x8_fletes_vehicle_manager,x8.flete.vehicle.manager,model_x8_flete_vehicle,x8_vehicle_manager,1,1,1,1
