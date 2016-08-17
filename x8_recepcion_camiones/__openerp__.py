@@ -10,7 +10,7 @@
     """,
     # data files always loaded at installation
     'data': [
-        'sequence.xml'
+        'sequence.xml',
         'security/x8_security.xml',
         'security/ir.model.access.csv',
         'views/recepcion_view.xml',
@@ -18,5 +18,6 @@
         'views/fletes_material.xml',
         'views/fletes_checador.xml',
         'views/fletes_registros.xml',
+        'views/fletes_zonas.xml',
     ],
 }

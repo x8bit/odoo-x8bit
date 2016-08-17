@@ -50,7 +50,7 @@
             <field name="view_mode">tree,form</field>
         </record>
 
-        <menuitem id="x8_materials_menu" parent="x8_recepciones_root_menu" name="Materiales" action="materials_list" sequence="8"/>
+        <menuitem id="x8_materials_menu" parent="x8_recepciones_root_menu" name="Materiales" action="materials_list" sequence="7"/>
 
     </data>
 </openerp>

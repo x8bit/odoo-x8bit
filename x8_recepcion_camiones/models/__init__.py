@@ -1,5 +1,7 @@
+import fletes_zonas
+import res_user
+import project_project
 import product
 import fletes_vehicle
 import fletes_material
-import fletes_checador
 import fletes_registros

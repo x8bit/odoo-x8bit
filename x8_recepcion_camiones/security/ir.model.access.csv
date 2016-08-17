@@ -3,3 +3,5 @@ x8_fletes_vehicle_user,x8.flete.vehicle.user,model_x8_flete_vehicle,x8_vehicle_u
 x8_fletes_vehicle_manager,x8.flete.vehicle.manager,model_x8_flete_vehicle,x8_vehicle_manager,1,1,1,1
 x8_fletes_material_user,x8.flete.material.user,model_x8_flete_material,x8_vehicle_user,1,0,0,0
 x8_fletes_material_manager,x8.flete.material.manager,model_x8_flete_material,x8_vehicle_manager,1,1,1,1
+x8_fletes_registro_user,x8.flete.registro.user,model_x8_flete_registro,x8_vehicle_user,1,0,1,0
+x8_fletes_registro_manager,x8.flete.registro.manager,model_x8_flete_registro,x8_vehicle_manager,1,1,1,1

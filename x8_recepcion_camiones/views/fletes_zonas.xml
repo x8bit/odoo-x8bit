@@ -1,0 +1,76 @@
+<openerp>
+    <data>
+        <record id="x8_flete_checador_form_inherit1" model="ir.ui.view">
+            <field name="name">Checadores Inherit 1</field>
+            <field name="model">project.project</field>
+            <field name="inherit_id" ref="project.edit_project"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[1]" position="after">
+                    <page name="checadores" string="Zonas">
+                        <field name="zonas" widget="one2many" />
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_x8_flete_zona_form">
+            <field name="name">view.x8.flete.zona.form</field>
+            <field name="model">x8.flete.zona</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <sheet>
+                        <group>
+                            <group string="Generales">
+                                <field name="project_id" />
+                                <field name="description" />
+                            </group>
+                        </group>
+                        <notebook colspan="4" position="inside">
+                            <page name="checadores" string="Checadores">
+                                <field name="checadores" widget="many2many_kanban" options="{'not_delete': True}">
+                                    <kanban quick_create="false" create="true" delete="true">
+                                        <field name="name"/>
+                                        <templates>
+                                            <t t-name="kanban-box">
+                                                <div class="oe_kanban_global_click" style="position: relative">
+                                                    <a t-if="! read_only_mode" type="delete" style="position: absolute; right: 0; padding: 4px; diplay: inline-block">X</a>
+                                                    <div class="oe_module_vignette">
+                                                        <img t-att-src="kanban_image('res.users', 'image_small', record.id.value)" class="oe_avatar oe_kanban_avatar_smallbox"/>
+                                                        <div class="oe_module_desc">
+                                                            <field name="name"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </t>
+                                        </templates>
+                                    </kanban>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_x8_flete_zona_tree" model="ir.ui.view">
+            <field name="name">view.x8.flete.zona.tree</field>
+            <field name="model">x8.flete.zona</field>
+            <field name="arch" type="xml">
+                <tree string="Zonas de proyectos">
+                    <field name="name"/>
+                    <field name="project_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="zonas_list" model="ir.actions.act_window">
+            <field name="name">Tabla de zonas</field>
+            <field name="res_model">x8.flete.zona</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="x8_zonas_menu" parent="x8_recepciones_root_menu" name="Zonas" action="zonas_list" sequence="7"/>
+
+    </data>
+</openerp>
