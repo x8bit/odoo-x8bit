@@ -10,6 +10,7 @@
     """,
     # data files always loaded at installation
     'data': [
+        'sequence.xml'
         'security/x8_security.xml',
         'security/ir.model.access.csv',
         'views/recepcion_view.xml',
