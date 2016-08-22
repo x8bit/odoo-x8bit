@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<template id="x8_favicon_web" inherit_id="web.layout" name="Custom Favicon">
+			<xpath expr="//link[@rel='shortcut icon']" position="attributes">
+				<attribute name="href">/x8_favicon_web/static/src/img/favicon.png</attribute>
+				<attribute name="type">image/png</attribute>
+			</xpath>
+		</template>
+	</data>
+</openerp>
