@@ -5,7 +5,6 @@
         'document',
         'company_facturae_certs',
         'l10n_mx_payment_method',
-        'l10n_mx_base_vat_split',
         'l10n_mx_partner_address'
     ],
     'author': "X8BIT SA DE CV",
