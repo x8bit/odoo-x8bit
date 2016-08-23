@@ -5,3 +5,4 @@ import product
 import fletes_vehicle
 import fletes_material
 import fletes_registros
+import fletes_zonas_areas

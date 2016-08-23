@@ -24,6 +24,7 @@
                                 <field name="name"/>
                                 <field name="project_id" />
                                 <field name="description" />
+                                <field name="areas" widget="many2many_tags"/>
                             </group>
                         </group>
                         <notebook colspan="4" position="inside">

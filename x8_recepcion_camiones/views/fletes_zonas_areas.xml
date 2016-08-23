@@ -1,0 +1,43 @@
+<openerp>
+    <data>
+       
+        <record model="ir.ui.view" id="view_x8_flete_zona_area_form">
+            <field name="name">view.x8.flete.zona.area.form</field>
+            <field name="model">x8.flete.zona.areas</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <sheet>
+                        <group>
+                            <group string="Generales">
+                                <field name="name"/>
+                                <field name="zona_id" />
+                                <field name="description" />
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_x8_flete_zona_area_tree" model="ir.ui.view">
+            <field name="name">view.x8.flete.zona.area.tree</field>
+            <field name="model">x8.flete.zona.areas</field>
+            <field name="arch" type="xml">
+                <tree string="Areas">
+                    <field name="name"/>
+                    <field name="zona_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="zonas_areas_list" model="ir.actions.act_window">
+            <field name="name">Tabla de areas</field>
+            <field name="res_model">x8.flete.zona.areas</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="x8_zonas_areas_menu" parent="x8_recepciones_root_menu" name="Areas" action="zonas_areas_list" sequence="8"/>
+
+    </data>
+</openerp>

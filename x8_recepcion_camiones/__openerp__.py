@@ -19,5 +19,6 @@
         'views/fletes_checador.xml',
         'views/fletes_registros.xml',
         'views/fletes_zonas.xml',
+        'views/fletes_zonas_areas.xml',
     ],
 }

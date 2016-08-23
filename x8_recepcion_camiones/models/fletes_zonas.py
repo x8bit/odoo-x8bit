@@ -9,3 +9,4 @@ class FleteZonas(models.Model):
 	project_id = fields.Many2one("project.project", string="Proyecto", required=True)
 	checadores = fields.Many2many("res.users", "checador_zone_rel", "checar_en_zone_id", string="Checadores del proyecto")
 	description = fields.Text(string='Description')
+	areas = fields.One2many("x8.flete.zona.areas", "zona_id", string="Areas")
