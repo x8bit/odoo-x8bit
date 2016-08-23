@@ -1,6 +1,6 @@
 <openerp>
     <data>
-    	<menuitem id="x8_recepciones_root_menu" name="Recepciones" sequence="30" groups="x8_vehicle_manager,x8_vehicle_user"/>
+    	<menuitem id="x8_recepciones_root_menu" name="Acarreos" sequence="30" groups="x8_vehicle_manager,x8_vehicle_user"/>
 
     	<menuitem id="x8_recepciones_products_menu" name="Products" action="product.product_template_action_product" parent="x8_recepciones_root_menu" sequence="10"/>
     </data>

@@ -9,3 +9,4 @@ class FleteVehiculo(models.Model):
     description = fields.Text(string="Descripcion del vehiculo")
     capacidad = fields.Float(string="Capacidad de carga en m3", required=True)
     project_id = fields.Many2one("project.project", string="Proyecto", required=True)
+    num_sindicato = fields.Integer(string="Numero de Sindicato", required=False)

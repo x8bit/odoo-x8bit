@@ -57,6 +57,7 @@
                             <field name="description"/>
                             <field name="capacidad"/>
                             <field name="project_id"/>
+                            <field name="num_sindicato"/>
                         </group>
                     </sheet>
                 </form>
@@ -80,13 +81,13 @@
         </record>
 
         <record id="vehicles_list" model="ir.actions.act_window">
-            <field name="name">Tabla Vehículos</field>
+            <field name="name">Tabla Camiones</field>
             <field name="res_model">x8.flete.vehicle</field>
             <field name="view_type">form</field>
             <field name="view_mode">kanban,tree,form</field>
         </record>
 
-        <menuitem id="x8_vehicles_menu" parent="x8_recepciones_root_menu" name="Vehículos" action="vehicles_list" sequence="5"/>
+        <menuitem id="x8_vehicles_menu" parent="x8_recepciones_root_menu" name="Camiones" action="vehicles_list" sequence="5"/>
 
     </data>
 </openerp>

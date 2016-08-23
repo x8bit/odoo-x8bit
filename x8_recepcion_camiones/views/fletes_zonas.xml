@@ -21,6 +21,7 @@
                     <sheet>
                         <group>
                             <group string="Generales">
+                                <field name="name"/>
                                 <field name="project_id" />
                                 <field name="description" />
                             </group>
