@@ -12,6 +12,8 @@
     'category': 'Accounting',
     'description': """
     Modulo que agrega la facturación electrónica a los invoices de odoo
+
+    apt-get install python-m2crypto
     """,
     # data files always loaded at installation
     'data': [
