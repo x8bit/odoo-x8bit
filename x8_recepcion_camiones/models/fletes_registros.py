@@ -16,3 +16,4 @@ class FleteRegistro(models.Model):
 	material_id = fields.Many2one('x8.flete.material', string="Material", required=True)
 	folio = fields.Char(string="Folio", required=True)
 	description = fields.Text(string="Notas")
+	zona_id = fields.Many2one('x8.flete.zona', string="Zona", required=True)

@@ -11,6 +11,7 @@
                             <group>
                                 <field name="vehicle_id" />
                                 <field name="material_id" />
+                                <field name="zona_id"/>
                             </group>
                             <group string="Datos adicionales">
                                 <field name="folio" />
@@ -31,6 +32,7 @@
                     <field name="create_uid"/>
                     <field name="vehicle_id"/>
                     <field name="material_id"/>
+                    <field name="zona_id"/>
                     <field name="folio"/>
                     <field name="create_date" />
                 </tree>
