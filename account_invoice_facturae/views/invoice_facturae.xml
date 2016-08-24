@@ -8,6 +8,23 @@
                 <button name="436" position="after">
                     <button name="genFacturae" type="object" states="open" groups="account.group_account_invoice" class="oe_highlight" string="Generar Factura"/>
                 </button>
+
+                <xpath expr="//page[2]" position="after">
+                    <page name="facturae" string="Factura electrónica">
+                        <group string="Archivos PDF y XML">
+                            <div>
+                                <label for="achivo_cer"/>
+                                <field name="factura_xml" widget="binary" />
+                                <!-- <field name="achivo_cer" domain="[('res_model', '=', 'res.company'),('res_id','=',id), ('mimetype','=','chemical/x-cerius')]"/> -->
+                            </div>
+                            <div>
+                                <label for="achivo_key"/>
+                                <field name="factura_pdf" widget="binary" />
+                                <!-- <field name="achivo_key" domain="[('res_model', '=', 'res.company'),('res_id','=',id), ('mimetype','=','application/pgp-keys')]"/> -->
+                            </div>
+                        </group>
+                    </page>
+                </xpath>
             </field>
         </record>
 

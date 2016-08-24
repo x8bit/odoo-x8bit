@@ -1,19 +1,48 @@
 # -*- coding: utf-8 -*-
-
 from openerp import models, fields, api
 from openerp.tools import config
-# import xml.etree.cElementTree as ET
 from lxml import etree as ET
+from datetime import datetime
 import xml.dom.minidom as minidom
 from openerp.exceptions import UserError
-# from subprocess import check_output
-# import base64, os
+from M2Crypto import RSA
+import base64
+import hashlib
 
 import logging
 _logger = logging.getLogger(__name__)
 
 class account_invoice(models.Model):
 	_inherit = 'account.invoice'
+
+	facturada = fields.Boolean(string="Invoice timbrado", readonly=True)
+	factura_xml = fields.Many2one("ir.attachment", string="XML de la factura")
+	factura_pdf = fields.Many2one("ir.attachment", string="PDF de la factura")
+
+	def timbrar(self, xml_base64):
+		raise UserError("No hay ningún módulo de PAC instalado")
+
+	def sella_xml(self, cfdi, numero_certificado, archivo_cer, archivo_pem):
+		keys = RSA.load_key(archivo_pem)
+		cert_file = open(archivo_cer, 'r')
+		cert = base64.b64encode(cert_file.read())
+		xdoc = ET.fromstring(cfdi)
+		xdoc.attrib['fecha'] = str(datetime.now().isoformat())[:19]
+
+		xsl_root = ET.parse(config["addons_path"] + '/account_invoice_facturae/sat/cadenaoriginal_3_2.xslt')
+		xsl = ET.XSLT(xsl_root)
+		cadena_original = xsl(xdoc)
+		print(str(cadena_original))
+		digest = hashlib.new('sha1', str(cadena_original)).digest()
+		sello = base64.b64encode(keys.sign(digest, "sha1"))
+		comp = xdoc.get('Comprobante')
+
+		xdoc.attrib['sello'] = sello
+		xdoc.attrib['noCertificado'] = numero_certificado
+		xdoc.attrib['certificado'] = cert
+		
+		# print ET.tostring(xdoc)
+		return ET.tostring(xdoc)
 
 	@api.model
 	def genFacturae(self, cr):
@@ -101,7 +130,7 @@ class account_invoice(models.Model):
 
 		for invoice_line in invoice.invoice_line_ids:
 			concepto = ET.SubElement(conceptos, '{%s}Concepto' % namespaces['cfdi'])
-			
+
 			concepto.set("cantidad", "{:.2f}".format(invoice_line.quantity))
 			concepto.set("descripcion", invoice_line.name)
 			concepto.set("importe", "{:.2f}".format(invoice_line.price_subtotal))
@@ -109,18 +138,34 @@ class account_invoice(models.Model):
 			concepto.set("unidad", invoice_line.uom_id.name)
 			concepto.set("valorUnitario", "{:.2f}".format(invoice_line.price_unit))
 
-		# invoice.
-
-		# <cfdi:Conceptos>
-		# 	<cfdi:Concepto cantidad="1.00" descripcion="CONSULTORÍA EN DISEÑO INTERFACES DE USUARIO. PLATAFORMA DE ANALÍTICA PREDICTIVA. PROYECTO PEI 223207." importe="21551.72" noIdentificacion="02" unidad="UNIDAD" valorUnitario="21551.72"/>
-		# 	<cfdi:Concepto cantidad="1.00" descripcion="CONSULTORÍA EN IMPLEMENTACIÓN DE PROFIT" importe="20000.00" noIdentificacion="21" unidad="SERVICIO" valorUnitario="20000.00"/>
-		# </cfdi:Conceptos>
-
 		impuestos = ET.SubElement(root, '{%s}Impuestos' % namespaces['cfdi'])
+		impuestos.set("totalImpuestosTrasladados", "{:.2f}".format(invoice.amount_tax))
+
+		traslados = ET.SubElement(impuestos, '{%s}Traslados' % namespaces['cfdi'])
+		for tax_line in invoice.tax_line_ids:
+			traslado = ET.SubElement(traslados, '{%s}Traslado' % namespaces['cfdi'])
+
+			traslado.set("impuesto", tax_line.tax_id.description)
+			traslado.set("tasa", "{:.2f}".format(tax_line.tax_id.amount))
+			traslado.set("importe", "{:.2f}".format(tax_line.amount))
 
 
+		xml_sin_sellar = ET.tostring(root)
+		# xml_sin_sellar = minidom.parseString(xml_str.encode("utf-8"))
 
-		xml_str = ET.tostring(root)
-		xml = minidom.parseString(xml_str.encode("utf-8"))
+		archivo_cer_path = config.filestore(self.env.cr.dbname) + "/" + invoice.company_id.achivo_cer.store_fname
+		archivo_pem_path = config.filestore(self.env.cr.dbname) + "/" + invoice.company_id.achivo_pem.store_fname
+
+		xml_sellado = self.sella_xml(xml_sin_sellar, invoice.company_id.numero_certificado, archivo_cer_path, archivo_pem_path)
+		xml_base64 = base64.encodestring(xml_sellado)
+
+		self.timbrar(xml_base64)
+
+		self.facturada = True
+
+		xml = minidom.parseString(xml_sellado.encode("utf-8"))
+
+		# xml = minidom.parseString(contenido.xml.encode("utf-8"))
 		_logger.info(xml.toprettyxml())
+
 		raise UserError(xml.toprettyxml())
