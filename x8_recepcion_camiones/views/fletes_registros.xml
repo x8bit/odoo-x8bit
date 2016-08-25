@@ -11,7 +11,8 @@
                             <group>
                                 <field name="vehicle_id" />
                                 <field name="material_id" />
-                                <field name="zona_id"/>
+                                <field name="project_id" attrs="{'invisible': [('material_id','=', False)]}"/>
+                                <field name="zona_id" domain="[('project_id','=', project_id)]" attrs="{'invisible': [('material_id','=', False)]}"/>
                             </group>
                             <group string="Datos adicionales">
                                 <field name="folio" />
