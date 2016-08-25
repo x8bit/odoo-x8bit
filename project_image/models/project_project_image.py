@@ -6,4 +6,4 @@ class project_project_image(models.Model):
 	_inherit = 'project.project'
 
 	#fields
-	imagen = fields.Many2one("ir.attachment", string="Imagen del mapa")
+	imagen = fields.Binary(string="Imagen del mapa", attachment=True)

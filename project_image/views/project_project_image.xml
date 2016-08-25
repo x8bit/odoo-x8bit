@@ -7,7 +7,7 @@
             <field name="inherit_id" ref="project.edit_project"/>
             <field name="arch" type="xml">
                 <field name="user_id" position="after">
-                    <field name="imagen" widget="binary" />
+                    <field name="imagen" widget="image" />
                 </field>
             </field>
         </record> 
