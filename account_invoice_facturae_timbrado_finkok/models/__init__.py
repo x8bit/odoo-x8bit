@@ -1,1 +1,3 @@
+import res_company
 import timbrado
+import finkok_settings

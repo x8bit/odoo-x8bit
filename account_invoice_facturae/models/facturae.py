@@ -8,6 +8,7 @@ from openerp.exceptions import UserError
 from M2Crypto import RSA
 import base64
 import hashlib
+import pytz
 
 import logging
 _logger = logging.getLogger(__name__)
@@ -16,18 +17,21 @@ class account_invoice(models.Model):
 	_inherit = 'account.invoice'
 
 	facturada = fields.Boolean(string="Invoice timbrado", readonly=True)
-	factura_xml = fields.Many2one("ir.attachment", string="XML de la factura")
-	factura_pdf = fields.Many2one("ir.attachment", string="PDF de la factura")
+	factura_xml = fields.Many2one("ir.attachment", string="XML de la factura", readonly=True)
+	factura_pdf = fields.Many2one("ir.attachment", string="PDF de la factura", readonly=True)
+	factura_xml_download = fields.Binary(string="XML de la factura", related='factura_xml.datas')
+	factura_xml_fname = fields.Char(related='factura_xml.datas_fname')
 
 	def timbrar(self, xml_base64):
 		raise UserError("No hay ningún módulo de PAC instalado")
 
-	def sella_xml(self, cfdi, numero_certificado, archivo_cer, archivo_pem):
+	def sella_xml(self, cfdi, numero_certificado, archivo_cer, archivo_pem, now):
 		keys = RSA.load_key(archivo_pem)
 		cert_file = open(archivo_cer, 'r')
 		cert = base64.b64encode(cert_file.read())
 		xdoc = ET.fromstring(cfdi)
-		xdoc.attrib['fecha'] = str(datetime.now().isoformat())[:19]
+
+		xdoc.attrib['fecha'] = str(now.isoformat())[:19]
 
 		xsl_root = ET.parse(config["addons_path"] + '/account_invoice_facturae/sat/cadenaoriginal_3_2.xslt')
 		xsl = ET.XSLT(xsl_root)
@@ -45,8 +49,15 @@ class account_invoice(models.Model):
 		return ET.tostring(xdoc)
 
 	@api.model
-	def genFacturae(self, cr):
+	def genFacturae(self, cr, uid):
 		invoice = self.browse(cr)
+
+		if invoice.timbrado:
+			raise UserError("Invoice ya timbrado")
+
+		tz_name = uid['tz'] or 'America/Monterrey'
+		user_tz = pytz.timezone(tz_name)
+		now = pytz.utc.localize(datetime.now()).astimezone(user_tz)
 
 		namespaces =  {
 			'cfdi' : "http://www.sat.gob.mx/cfd/3",
@@ -56,9 +67,9 @@ class account_invoice(models.Model):
 		root = ET.Element('{%s}Comprobante' % namespaces['cfdi'], nsmap=namespaces)
 		root.set("{%s}schemaLocation" % namespaces['xsi'], "http://www.sat.gob.mx/cfd/3 http://www.sat.gob.mx/sitio_internet/cfd/3/cfdv32.xsd")
 		root.set("version", "3.2")
-		arr = invoice.number.split("-")
-		root.set("serie", arr[0])
-		root.set("folio", arr[1])
+		serie_folio = invoice.number.split("-")
+		root.set("serie", serie_folio[0])
+		root.set("folio", serie_folio[1])
 		root.set("formaDePago", "PAGO EN UNA SOLA EXHIBICION")
 		root.set("Moneda", "PESO MXN")
 		#root.set("Moneda", "DOLAR USD")
@@ -151,21 +162,32 @@ class account_invoice(models.Model):
 
 
 		xml_sin_sellar = ET.tostring(root)
-		# xml_sin_sellar = minidom.parseString(xml_str.encode("utf-8"))
 
 		archivo_cer_path = config.filestore(self.env.cr.dbname) + "/" + invoice.company_id.achivo_cer.store_fname
 		archivo_pem_path = config.filestore(self.env.cr.dbname) + "/" + invoice.company_id.achivo_pem.store_fname
 
-		xml_sellado = self.sella_xml(xml_sin_sellar, invoice.company_id.numero_certificado, archivo_cer_path, archivo_pem_path)
+		xml_sellado = self.sella_xml(xml_sin_sellar, invoice.company_id.numero_certificado, archivo_cer_path, archivo_pem_path, now)
+		xml_sellado = '<?xml version="1.0" encoding="utf-8"?>' + xml_sellado
+
 		xml_base64 = base64.encodestring(xml_sellado)
 
-		self.timbrar(xml_base64)
+		xml = self.timbrar(xml_base64)
 
-		self.facturada = True
+		name = invoice.company_id.vat[2:5] + "%010d" % (int(serie_folio[1]),)
 
-		xml = minidom.parseString(xml_sellado.encode("utf-8"))
+		factura_xml = self.env['ir.attachment'].create({
+			'res_model'    : 'account.invoice',
+			'res_id'       : invoice.id,
+			'mimetype'     :'application/xml',
+			'datas'        : base64.encodestring(xml),
+			'name'         : name + ".xml",
+			'datas_fname'  : name + ".xml",
+			'display_name' : name + ".xml"
+		})
 
-		# xml = minidom.parseString(contenido.xml.encode("utf-8"))
-		_logger.info(xml.toprettyxml())
+		values = {
+			'facturada': True,
+			'factura_xml': factura_xml.id
+		}
 
-		raise UserError(xml.toprettyxml())
+		return invoice.write(values)

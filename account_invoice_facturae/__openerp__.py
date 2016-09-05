@@ -19,5 +19,6 @@
     'data': [
         'security/ir.model.access.csv',
         'views/invoice_facturae.xml',
+        'views/invoice_pdf_report.xml',
     ],
 }

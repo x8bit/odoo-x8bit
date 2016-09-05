@@ -6,21 +6,23 @@
             <field name="model">account.invoice</field>
             <field name="arch" type="xml">
                 <button name="436" position="after">
-                    <button name="genFacturae" type="object" states="open" groups="account.group_account_invoice" class="oe_highlight" string="Generar Factura"/>
+                    <button name="genFacturae" type="object" states="open" groups="account.group_account_invoice" class="oe_highlight" string="Generar Factura"  confirm="Do you want to export data?"/>
                 </button>
 
                 <xpath expr="//page[2]" position="after">
                     <page name="facturae" string="Factura electrónica">
                         <group string="Archivos PDF y XML">
                             <div>
-                                <label for="achivo_cer"/>
-                                <field name="factura_xml" widget="binary" />
-                                <!-- <field name="achivo_cer" domain="[('res_model', '=', 'res.company'),('res_id','=',id), ('mimetype','=','chemical/x-cerius')]"/> -->
+                                <label for="facturada"/>
+                                <field name="facturada" />
                             </div>
                             <div>
-                                <label for="achivo_key"/>
-                                <field name="factura_pdf" widget="binary" />
-                                <!-- <field name="achivo_key" domain="[('res_model', '=', 'res.company'),('res_id','=',id), ('mimetype','=','application/pgp-keys')]"/> -->
+                                <label for="factura_xml_download"/>
+                                <field name="factura_xml_download" filename="factura_xml_fname" />
+                            </div>
+                            <div>
+                                <label for="factura_pdf"/>
+                                <field name="factura_pdf" />
                             </div>
                         </group>
                     </page>
