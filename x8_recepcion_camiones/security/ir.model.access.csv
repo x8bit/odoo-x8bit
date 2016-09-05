@@ -7,3 +7,5 @@ x8_fletes_registro_user,x8.flete.registro.user,model_x8_flete_registro,x8_vehicl
 x8_fletes_registro_manager,x8.flete.registro.manager,model_x8_flete_registro,x8_vehicle_manager,1,1,1,1
 x8_flete_zona_user,x8.flete.zona.user,model_x8_flete_zona,x8_vehicle_user,1,0,0,0
 x8_flete_zona_manager,x8.flete.zona.manager,model_x8_flete_zona,x8_vehicle_manager,1,1,1,1
+x8_flete_zona_user,x8.flete.zona.user,model_x8_flete_zona_areas,x8_vehicle_user,1,0,0,0
+x8_flete_zona_manager,x8.flete.zona.manager,model_x8_flete_zona_areas,x8_vehicle_manager,1,1,1,1
