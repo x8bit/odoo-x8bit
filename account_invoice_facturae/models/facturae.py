@@ -52,8 +52,8 @@ class account_invoice(models.Model):
 	def genFacturae(self, cr, uid):
 		invoice = self.browse(cr)
 
-		if invoice.timbrado:
-			raise UserError("Invoice ya timbrado")
+		# if invoice.facturada:
+		# 	raise UserError("Invoice ya timbrado")
 
 		tz_name = uid['tz'] or 'America/Monterrey'
 		user_tz = pytz.timezone(tz_name)
@@ -82,7 +82,11 @@ class account_invoice(models.Model):
 			raise UserError("Error en método de pago o cuenta de pago")
 
 		root.set("metodoDePago", pay_method_id)
-		root.set("LugarExpedicion", invoice.company_id.city)
+		try:
+			root.set("LugarExpedicion", invoice.company_id.city)
+		except TypeError:
+			raise UserError("Error en dirección de la compañía que esta facturando")
+
 		root.set("NumCtaPago", cta_pago)
 
 		root.set("condicionesDePago", invoice.payment_term_id.name)
@@ -168,7 +172,7 @@ class account_invoice(models.Model):
 
 		xml_sellado = self.sella_xml(xml_sin_sellar, invoice.company_id.numero_certificado, archivo_cer_path, archivo_pem_path, now)
 		xml_sellado = '<?xml version="1.0" encoding="utf-8"?>' + xml_sellado
-
+		
 		xml_base64 = base64.encodestring(xml_sellado)
 
 		xml = self.timbrar(xml_base64)

@@ -21,7 +21,6 @@ class account_invoice(models.Model):
 
 		contenido = client.service.stamp(xml_base64, company.finkok_username, company.finkok_password)
 		if contenido.Incidencias:
-			_logger.info(contenido)
 			msg = ""
 			for incidencia in contenido.Incidencias:
 				msg += "\tIdIncidencia = " + str(incidencia[1][0].IdIncidencia) + "\n"
@@ -35,4 +34,11 @@ class account_invoice(models.Model):
 
 			raise UserError("Error al timbrar: \n\n" + msg)
 		else:
+			_logger.info("----------------------------")
+			_logger.info(contenido.UUID)
+			_logger.info(contenido.Fecha)
+			_logger.info(contenido.CodEstatus)
+			_logger.info(contenido.SatSeal)
+			_logger.info(contenido.NoCertificadoSAT)
+			_logger.info("----------------------------")
 			return contenido.xml.encode("utf-8")
