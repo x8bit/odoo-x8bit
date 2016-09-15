@@ -11,17 +11,24 @@
 
     <template id="account.report_invoice_facturae_header" inherit_id="report.external_layout_header"> <!--  primary="True" -->
         <xpath expr="//div[@class='header']" position="replace">
-            <div class="row">
-                <div class="col-xs-3">
-                    <img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height: 100px;"/>
-                </div>
-                <div class="col-xs-6" name="company_address">
-                    <!-- <div t-field="company.partner_id" t-field-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;vat&quot;,&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: true}" style="border-bottom: 1px solid #457DA3;"/> -->
-                    <p>RFC: <span t-esc="company.vat[2:]"></span>, <span t-field="company.name"></span></p>
-                    
-                </div>
-                <div class="col-xs-3">
-                    
+            <div class="header">
+                <div class="row uppercase" >
+                    <div class="col-xs-3">
+                        <img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height: 100px;"/>
+                    </div>
+                    <div class="col-xs-6" name="company_address">
+                        <!-- <div t-field="company.partner_id" t-field-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;vat&quot;,&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: true}" style="border-bottom: 1px solid #457DA3;"/> -->
+                        <p style="margin: 0 0 4px;"><b>RFC: <span t-esc="company.vat[2:]"></span>, <span t-field="company.name"></span></b></p>
+                        <p style="margin: 0 0 4px;"><span t-field="company.street"></span> <span t-field="company.l10n_mx_street3"></span> <span t-field="company.l10n_mx_street4"></span>, COL: <span t-field="company.street2"></span>, <span t-field="company.city"></span>,</p>
+
+                        <p style="margin: 0 0 4px;"><span t-field="company.state_id"></span>, <span t-field="company.country_id"></span>, CP: <span t-field="company.zip"></span>, EMAIL: <span t-field="company.email"></span></p>
+
+                        <p style="margin: 0 0 4px;">REGIMEN FISCAL: <span  t-field="company.partner_id.regimen_fiscal_id"></span></p>
+                        
+                    </div>
+                    <div class="col-xs-3">
+                        
+                    </div>
                 </div>
             </div>
         </xpath>
@@ -32,8 +39,46 @@
             <t t-foreach="docs" t-as="o">
                 <t t-call="report.external_layout">
                     <div class="page">
-                        <h2>Report title</h2>
-                        <p>This object's name is <span t-field="o.number"/></p>
+                        <h5><b><span t-field="o.partner_id"/></b></h5>
+                        <p><b>RFC: <span t-field="o.partner_id.vat" /></b></p>
+                        <p> <span t-field="o.partner_id.street"/> <span t-field="o.partner_id.l10n_mx_street3"/> <span t-field="o.partner_id.l10n_mx_street4"/>, COL: <span t-field="o.partner_id.street2"/></p>
+                        <p> <span t-field="o.partner_id.city"/>, <span t-field="o.partner_id.state_id"/>, <span t-field="o.partner_id.country_id"/></p>
+                        <br/>
+
+                        <t t-set="display_discount" t-value="any([l.discount for l in o.invoice_line_ids])"/>
+
+                        <table class="table table-condensed">
+                            <thead>
+                                <tr>
+                                    <th>Descripcion</th>
+                                    <th class="text-right">Cantidad</th>
+                                    <th class="text-right">Precio Unitario</th>
+                                    <th class="text-right">Impuestos</th>
+                                    <th class="text-right">Precios</th>
+                                </tr>
+                            </thead>
+                            <tbody class="invoice_tbody">
+                                <tr t-foreach="o.invoice_line_ids" t-as="l">
+                                    <td><span t-field="l.name"/></td>
+                                    <td class="text-right">
+                                        <span t-field="l.quantity"/>
+                                        <span t-field="l.uom_id"  groups="product.group_uom"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-field="l.price_unit"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-esc="', '.join(map(lambda x: (x.description or x.name), l.invoice_line_tax_ids))"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-field="l.price_subtotal" 
+                                            t-field-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/>
+                                    </td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
                     </div>
                 </t>
             </t>
