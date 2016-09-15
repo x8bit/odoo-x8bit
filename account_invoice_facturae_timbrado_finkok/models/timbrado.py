@@ -40,5 +40,8 @@ class account_invoice(models.Model):
 			_logger.info(contenido.CodEstatus)
 			_logger.info(contenido.SatSeal)
 			_logger.info(contenido.NoCertificadoSAT)
+			contenido_xml = contenido
+			_logger.info(contenido)
 			_logger.info("----------------------------")
+			
 			return contenido.xml.encode("utf-8")
