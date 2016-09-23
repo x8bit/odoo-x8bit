@@ -176,6 +176,7 @@ class account_invoice(models.Model):
 		xml_base64 = base64.encodestring(xml_sellado)
 
 		xml = self.timbrar(xml_base64)
+		
 
 		name = invoice.company_id.vat[2:5] + "%010d" % (int(serie_folio[1]),)
 

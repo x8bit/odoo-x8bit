@@ -10,6 +10,7 @@ class account_invoice(models.Model):
 	_inherit = 'account.invoice'
 
 	def timbrar(self, xml_base64):
+		
 		# Username and Password, assigned by FINKOK
 		company = self.env.user.company_id
 
@@ -34,14 +35,14 @@ class account_invoice(models.Model):
 
 			raise UserError("Error al timbrar: \n\n" + msg)
 		else:
-			_logger.info("----------------------------")
+			_logger.info("------------********----------------")
 			_logger.info(contenido.UUID)
 			_logger.info(contenido.Fecha)
 			_logger.info(contenido.CodEstatus)
 			_logger.info(contenido.SatSeal)
 			_logger.info(contenido.NoCertificadoSAT)
 			contenido_xml = contenido
-			_logger.info(contenido)
-			_logger.info("----------------------------")
+			_logger.info(contenido_xml)
+			_logger.info("------------********----------------")
 			
 			return contenido.xml.encode("utf-8")
