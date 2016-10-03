@@ -21,6 +21,15 @@ class account_invoice(models.Model):
 	factura_pdf = fields.Many2one("ir.attachment", string="PDF de la factura", readonly=True)
 	factura_xml_download = fields.Binary(string="XML de la factura", related='factura_xml.datas')
 	factura_xml_fname = fields.Char(related='factura_xml.datas_fname')
+	factura_moneda = fields.Char(string="Moneda", readonly=True)
+	factura_formapago = fields.Char(string="Forma de pago", readonly=True)
+	factura_uuid = fields.Char(string="UUID", readonly=True)
+	factura_fecemi = fields.Char(string="Fecha de emision", readonly=True)
+	factura_sellosat = fields.Char(string="Sello Sat", readonly=True)
+	factura_certificado = fields.Char(string="Certificado Sat", readonly=True)
+	factura_nocertificado = fields.Char(string="Certificado", readonly=True)
+	factura_sello = fields.Char(string="Sello", readonly=True)
+	factura_cadena = fields.Char(string="Cadena", readonly=True)
 
 	def timbrar(self, xml_base64):
 		raise UserError("No hay ningún módulo de PAC instalado")
@@ -40,13 +49,17 @@ class account_invoice(models.Model):
 		digest = hashlib.new('sha1', str(cadena_original)).digest()
 		sello = base64.b64encode(keys.sign(digest, "sha1"))
 		comp = xdoc.get('Comprobante')
+		
+		_logger.info(sello)
+		_logger.info(cert)
 
 		xdoc.attrib['sello'] = sello
 		xdoc.attrib['noCertificado'] = numero_certificado
 		xdoc.attrib['certificado'] = cert
+
+		_logger.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 		
-		# print ET.tostring(xdoc)
-		return ET.tostring(xdoc)
+		return ET.tostring(xdoc),numero_certificado,sello,cadena_original
 
 	@api.model
 	def genFacturae(self, cr, uid):
@@ -169,15 +182,18 @@ class account_invoice(models.Model):
 
 		archivo_cer_path = config.filestore(self.env.cr.dbname) + "/" + invoice.company_id.achivo_cer.store_fname
 		archivo_pem_path = config.filestore(self.env.cr.dbname) + "/" + invoice.company_id.achivo_pem.store_fname
-
-		xml_sellado = self.sella_xml(xml_sin_sellar, invoice.company_id.numero_certificado, archivo_cer_path, archivo_pem_path, now)
+		# Se agregan mas variables, para recibir valores que regresa la funcion
+		xml_sellado,no_certificado,sello_sella,cadena = self.sella_xml(xml_sin_sellar, invoice.company_id.numero_certificado, archivo_cer_path, archivo_pem_path, now)
 		xml_sellado = '<?xml version="1.0" encoding="utf-8"?>' + xml_sellado
 		
 		xml_base64 = base64.encodestring(xml_sellado)
 
-		xml = self.timbrar(xml_base64)
-		
-
+		xml,UUID,fecha,sello,certificado = self.timbrar(xml_base64)
+		_logger.info("*********************************")
+		_logger.info(no_certificado)
+		_logger.info(UUID)
+		_logger.info(fecha)
+		_logger.info(sello)
 		name = invoice.company_id.vat[2:5] + "%010d" % (int(serie_folio[1]),)
 
 		factura_xml = self.env['ir.attachment'].create({
@@ -192,7 +208,16 @@ class account_invoice(models.Model):
 
 		values = {
 			'facturada': True,
-			'factura_xml': factura_xml.id
+			'factura_xml': factura_xml.id,
+			'factura_moneda' : 'PESO MXN',
+			'factura_formapago' : 'PAGO EN UNA SOLA EXHIBICION',
+			'factura_uuid' : UUID,
+			'factura_fecemi' : fecha,
+			'factura_sellosat' : sello,
+			'factura_certificado' : certificado,
+			'factura_nocertificado': no_certificado,
+			'factura_sello' : sello_sella,
+			'factura_cadena' : cadena
 		}
 
 		return invoice.write(values)
