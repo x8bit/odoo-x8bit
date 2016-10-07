@@ -40,11 +40,22 @@
             </field>
         </record>
 
+        <record id="view_flete_registro_pivot" model="ir.ui.view">
+            <field name="name">view.x8.flete.registro.pivot</field>
+            <field name="model">x8.flete.registro</field>
+            <field name="arch" type="xml">
+                <pivot string="Vehiculos recepciones">
+                    <field name="product_id" type="row"/>
+                    <field name="capacidad" type="measure"/>
+                </pivot>
+            </field>
+        </record>
+
         <record id="registros_list" model="ir.actions.act_window">
             <field name="name">Registro de entradas</field>
             <field name="res_model">x8.flete.registro</field>
             <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">tree,pivot,form</field>
         </record>
 
         <menuitem id="x8_registros_menu" parent="x8_recepciones_root_menu" name="Registro de entradas" action="registros_list" sequence="9"/>
