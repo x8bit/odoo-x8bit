@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from openerp import models, fields, api, _
 
 class FleteRegistro(models.Model):
@@ -23,3 +24,5 @@ class FleteRegistro(models.Model):
 	description = fields.Text(string="Notas")
 	zona_id = fields.Many2one('x8.flete.zona', string="Zona", required=True)
 	project_id = fields.Many2one("project.project", string="Proyecto", readonly=True)
+	product_id = fields.Many2one('product.template', string="Producto", related='material_id.product_id', store=True)
+	capacidad = fields.Float(string="Metros cúbicos", related='vehicle_id.capacidad', store=True)
