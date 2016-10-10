@@ -242,6 +242,7 @@
                         <!-- certificados del sat -->
                         <div class="row ">
                             <div class="col-xs-4">
+                                <img t-att-src="'/report/barcode/QR/%s' % 'My text in qr code'"/>
                             </div>
                             <div class="col-xs-8">
                                 
@@ -269,10 +270,41 @@
                         <!-- end certificados del sat -->
 
                     </div>
+
                 </t>
             </t>
         </t>
     </template>
+    <template id="account.report_invoice_facturae_footer" inherit_id="report.external_layout_footer">
+        <xpath expr="//div[@class='footer']" position="replace">
+            <div class="footer">
+                <div class="text-center" style="border-top: 1px solid black; font-size: 10px;">
+                    <ul t-if="not company.custom_footer" class="list-inline">
+                        <li>ESTE DOCUMENTO ES UNA REPRESENTACION IMPRESA DE UN CFDI</li>
+                    </ul>
+
+                    <ul t-if="not company.custom_footer" class="list-inline" name="financial_infos">
+                       
+                    </ul>
+
+                    <t t-if="company.custom_footer">
+                       
+                    </t>
+
+                    <ul class="list-inline">
+                        <li>Page:</li>
+                        <li><span class="page"/></li>
+                        <li>/</li>
+                        <li><span class="topage"/></li>
+                    </ul>
+                    
+                </div>
+            </div>
+                 
+        </xpath>
+    </template>
+
+
 <!-- 
     <?xml version="1.0"?>
     <t t-name="report.external_layout_header">

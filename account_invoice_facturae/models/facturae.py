@@ -9,6 +9,7 @@ from M2Crypto import RSA
 import base64
 import hashlib
 import pytz
+from reportlab.graphics.barcode import createBarcodeDrawing
 
 import logging
 _logger = logging.getLogger(__name__)
@@ -50,14 +51,14 @@ class account_invoice(models.Model):
 		sello = base64.b64encode(keys.sign(digest, "sha1"))
 		comp = xdoc.get('Comprobante')
 		
-		_logger.info(sello)
-		_logger.info(cert)
+		# _logger.info(sello)
+		# _logger.info(cert)
 
 		xdoc.attrib['sello'] = sello
 		xdoc.attrib['noCertificado'] = numero_certificado
 		xdoc.attrib['certificado'] = cert
 
-		_logger.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+	
 		
 		return ET.tostring(xdoc),numero_certificado,sello,cadena_original
 
@@ -189,11 +190,7 @@ class account_invoice(models.Model):
 		xml_base64 = base64.encodestring(xml_sellado)
 
 		xml,UUID,fecha,sello,certificado = self.timbrar(xml_base64)
-		_logger.info("*********************************")
-		_logger.info(no_certificado)
-		_logger.info(UUID)
-		_logger.info(fecha)
-		_logger.info(sello)
+		
 		name = invoice.company_id.vat[2:5] + "%010d" % (int(serie_folio[1]),)
 
 		factura_xml = self.env['ir.attachment'].create({
