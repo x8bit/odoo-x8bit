@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<record  model="ir.ui.view" id="res_partner_form_x8_contacto_extra">
+            <field name="name">res.partner.form_x8_contacto_extra</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+				<xpath expr="//field[@name='name']" position="after">
+					<field name="nombre_comercial" placeholder="Nombre comercial"/>
+				</xpath>
+				<xpath expr="//page[@name='accounting']//field[@name='vat']" position="replace">
+					<field name="vat" placeholder="Por ejemplo, MX0000000" attrs="{'readonly': True }"/>
+				</xpath>
+				<xpath expr="//field[@name='property_account_position_id']" position="after">
+					<field name="rfc"/>
+				</xpath>
+            </field>
+        </record>
+	</data>
+</openerp>
