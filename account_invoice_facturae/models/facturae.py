@@ -31,6 +31,7 @@ class account_invoice(models.Model):
 	factura_nocertificado = fields.Char(string="Certificado", readonly=True)
 	factura_sello = fields.Char(string="Sello", readonly=True)
 	factura_cadena = fields.Char(string="Cadena", readonly=True)
+	factura_qr_cadena = fields.Char(string="QR", readonly=True)
 
 	def timbrar(self, xml_base64):
 		raise UserError("No hay ningún módulo de PAC instalado")
@@ -72,7 +73,7 @@ class account_invoice(models.Model):
 		tz_name = uid['tz'] or 'America/Monterrey'
 		user_tz = pytz.timezone(tz_name)
 		now = pytz.utc.localize(datetime.now()).astimezone(user_tz)
-
+		qr_string = ""
 		namespaces =  {
 			'cfdi' : "http://www.sat.gob.mx/cfd/3",
 			'xsi' : "http://www.w3.org/2001/XMLSchema-instance",
@@ -112,6 +113,7 @@ class account_invoice(models.Model):
 		try:
 			emisor.set("rfc", invoice.company_id.vat[2:])
 			emisor.set("nombre", invoice.company_id.name)
+			qr_string += '?re=%s' % invoice.company_id.vat[2:15]
 		except TypeError:
 			raise UserError("RFC no asignado en la compañía que esta facturando")
 
@@ -138,6 +140,7 @@ class account_invoice(models.Model):
 		try:
 			receptor.set("rfc", invoice.partner_id.vat[2:])
 			receptor.set("nombre", invoice.partner_id.name)
+			qr_string += '&rr=%s' % invoice.partner_id.vat[2:15]
 		except TypeError:
 			raise UserError("RFC no asignado en la compañía a la que esta facturando")
 
@@ -192,6 +195,10 @@ class account_invoice(models.Model):
 		xml,UUID,fecha,sello,certificado = self.timbrar(xml_base64)
 		
 		name = invoice.company_id.vat[2:5] + "%010d" % (int(serie_folio[1]),)
+		
+		total_float = float(unicode(invoice.amount_total))
+		qr_string += '&tt=%017.6f' % total_float
+		qr_string += '&id=%s' % UUID
 
 		factura_xml = self.env['ir.attachment'].create({
 			'res_model'    : 'account.invoice',
@@ -214,7 +221,8 @@ class account_invoice(models.Model):
 			'factura_certificado' : certificado,
 			'factura_nocertificado': no_certificado,
 			'factura_sello' : sello_sella,
-			'factura_cadena' : cadena
+			'factura_cadena' : cadena,
+			'factura_qr_cadena' : qr_string,
 		}
 
 		return invoice.write(values)

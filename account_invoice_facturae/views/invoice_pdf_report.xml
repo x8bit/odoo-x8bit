@@ -94,10 +94,10 @@
                             <thead>
                                 <tr>
                                     <th>Descripcion</th>
+                                    <th>Unidad de medida</th>
                                     <th class="text-right">Cantidad</th>
                                     <th class="text-right">Precio Unitario</th>
-                                    <th class="text-right">Impuestos</th>
-                                    <th class="text-right">Precios</th>
+                                    <th class="text-right">Importe</th>
                                 </tr>
                             </thead>
                             <tbody class="invoice_tbody">
@@ -107,14 +107,12 @@
                                         <span t-field="l.quantity"/>
                                         <span t-field="l.uom_id"  groups="product.group_uom"/>
                                     </td>
+                                    <td><span t-field="l.uom_id.name"/></td>
                                     <td class="text-right">
                                         <span t-field="l.price_unit"/>
                                     </td>
                                     <td class="text-right">
-                                        <span t-esc="', '.join(map(lambda x: (x.description or x.name), l.invoice_line_tax_ids))"/>
-                                    </td>
-                                    <td class="text-right">
-                                        <span t-field="l.price_subtotal" 
+                                        <span t-field="l.price_total" 
                                             t-field-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/>
                                     </td>
                                 </tr>
@@ -149,6 +147,9 @@
                                     </tr>
                                 </table>
                             </div>
+                        </div>
+                        <div class="row ">
+                            <strong>Total en letra: <span t-field="o.amount_to_text"/></strong>
                         </div>
                         <!-- end totales -->
                         <!-- Totales en letra -->
@@ -242,7 +243,8 @@
                         <!-- certificados del sat -->
                         <div class="row ">
                             <div class="col-xs-4">
-                                <img t-att-src="'/report/barcode/QR/%s' % 'My text in qr code'"/>
+                                <!--<img t-att-src="'/report/barcode/QR/%s' % "/>-->
+                                <img t-att-src="'/report/barcode/?type=%s&value=%s&width=%s&height=%s' % ('QR', o.factura_qr_cadena, 50, 50)" style="width:50px;height:50px;"/>
                             </div>
                             <div class="col-xs-8">
                                 
