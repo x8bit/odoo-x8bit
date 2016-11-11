@@ -10,6 +10,7 @@ import base64
 import hashlib
 import pytz
 from reportlab.graphics.barcode import createBarcodeDrawing
+import urllib
 
 import logging
 _logger = logging.getLogger(__name__)
@@ -32,8 +33,13 @@ class account_invoice(models.Model):
 	factura_sello = fields.Char(string="Sello", readonly=True)
 	factura_cadena = fields.Char(string="Cadena", readonly=True)
 	factura_qr_cadena = fields.Char(string="QR", readonly=True)
+	factura_cadena_timbrada = fields.Char(string="Cadena timbrada", readonly=True)
+	factura_version = fields.Char(string="Versión", readonly=True)
 
 	def timbrar(self, xml_base64):
+		raise UserError("No hay ningún módulo de PAC instalado")
+
+	def cancelar_timbre(self, xml_base64):
 		raise UserError("No hay ningún módulo de PAC instalado")
 
 	def sella_xml(self, cfdi, numero_certificado, archivo_cer, archivo_pem, now):
@@ -43,6 +49,8 @@ class account_invoice(models.Model):
 		xdoc = ET.fromstring(cfdi)
 
 		xdoc.attrib['fecha'] = str(now.isoformat())[:19]
+		_logger.info("sello")
+		_logger.info(xdoc.attrib['fecha'])
 
 		xsl_root = ET.parse(config["addons_path"] + '/account_invoice_facturae/sat/cadenaoriginal_3_2.xslt')
 		xsl = ET.XSLT(xsl_root)
@@ -59,9 +67,26 @@ class account_invoice(models.Model):
 		xdoc.attrib['noCertificado'] = numero_certificado
 		xdoc.attrib['certificado'] = cert
 
-	
+		return ET.tostring(xdoc)
 		
-		return ET.tostring(xdoc),numero_certificado,sello,cadena_original
+		#return ET.tostring(xdoc),numero_certificado,sello,
+
+	def extract_timbre_info(self, xml_string):
+		tree = ET.fromstring(xml_string)
+		root = tree.getroot()
+		if not 'cfdi' in root.nsmap:
+			raise UserError("Namespace cfdi no definido")
+		
+		nspace = root.nsmap['cfdi']
+		complemento = root.find( '{%s}%s' % (ns,'Complemento') )
+		if complemento is None:
+			raise UserError("Namespace cfdi no definido")
+		return complemento.find('{http://www.sat.gob.mx/TimbreFiscalDigital}TimbreFiscalDigital')
+
+	def sella_timbrado(self, xml_element):
+		xsl_root = ET.parse(config["addons_path"] + '/account_invoice_facturae/sat/cadenaoriginal_3_2.xslt')
+		xsl = ET.XSLT(xsl_root)
+		return xsl(xml_element) or ''
 
 	@api.model
 	def genFacturae(self, cr, uid):
@@ -192,7 +217,21 @@ class account_invoice(models.Model):
 		
 		xml_base64 = base64.encodestring(xml_sellado)
 
-		xml,UUID,fecha,sello,certificado = self.timbrar(xml_base64)
+		#xml,UUID,fecha,sello,certificado, version = self.timbrar(xml_base64)
+		xml = self.timbrar(xml_base64)
+
+		timbre_fiscal = self.extract_timbre_info(xml)
+
+		if timbre_fiscal is None:
+			raise UserError("Timbre fiscal no encontrado")
+
+		UUID = timbre_fiscal.attrib['UUID']
+		fec_emision = timbre_fiscal.attrib['FechaTimbrado']
+		sello_sat = timbre_fiscal.attrib['selloSAT']
+		certificado = timbre_fiscal.attrib['noCertificadoSAT']
+		version = timbre_fiscal.attrib['version']
+
+		cadena_timbrada = self.sella_timbrado(timbre_fiscal)
 		
 		name = invoice.company_id.vat[2:5] + "%010d" % (int(serie_folio[1]),)
 		
@@ -222,7 +261,9 @@ class account_invoice(models.Model):
 			'factura_nocertificado': no_certificado,
 			'factura_sello' : sello_sella,
 			'factura_cadena' : cadena,
-			'factura_qr_cadena' : qr_string,
+			'factura_qr_cadena' : urllib.quote(qr_string),
+			'factura_version' : version,
+			'factura_cadena_timbrada' : cadena_timbrada,
 		}
 
 		return invoice.write(values)
