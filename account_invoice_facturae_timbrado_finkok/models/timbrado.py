@@ -38,10 +38,10 @@ class account_invoice(models.Model):
 
 			raise UserError("Error al timbrar: \n\n" + msg)
 		
-			xml_string = contenido.xml.encode("utf-8")
+		xml_string = contenido.xml.encode("utf-8")
 
-			_logger.info("------------********----------------")
-			_logger.info(xml_string)
-			_logger.info("------------********----------------")
+		_logger.info("------------********----------------")
+		_logger.info(xml_string)
+		_logger.info("------------********----------------")
 			
 		return xml_string
