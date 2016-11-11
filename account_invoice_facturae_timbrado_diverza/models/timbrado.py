@@ -20,7 +20,18 @@ class account_invoice(models.Model):
 			_logger.info("r.text")
 			_logger.info(r.text)
 			#xml,UUID,fecha,sello,certificado
-
 			return r.text.encode("utf-8"),"UUID","fec_emision","sello_sat","certificado"
 		else:
 			raise UserError("Error al timbrar con diverza")
+
+	def cancelar_timbre(self, emisor_rfc, uuid):
+		url = 'https://staging.diverza.com/stamp/cancel/%s/%s' % (emisor_rfc, uuid)
+		headers = {"x-auth-token": "ABCD1234"}
+		r = requests.post(url, headers=headers)
+		_logger.info("r")
+		_logger.info(r)
+		_logger.info(r.text)
+		if r.status_code == requests.codes.ok:
+			return True
+		else:
+			raise UserError("Error al cancelar timbre con diverza")
