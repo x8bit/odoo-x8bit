@@ -42,6 +42,13 @@ class account_invoice(models.Model):
 	def cancelar_timbre(self, xml_base64):
 		raise UserError("No hay ningún módulo de PAC instalado")
 
+	@api.model
+	def cancelar_timbre_factura(self, cr, uid):
+		invoice = self.browse(cr)
+		emisor_rfc = 'AAA010101AAA' #invoice.company_id.vat[2:]
+		uuid = 'f7da0c0d-2c2e-4753-9d56-b0f080252eda' #self.factura_uuid
+		self.cancelar_timbre(emisor_rfc, uuid)
+
 	def sella_xml(self, cfdi, numero_certificado, archivo_cer, archivo_pem, now):
 		keys = RSA.load_key(archivo_pem)
 		cert_file = open(archivo_cer, 'r')
@@ -52,10 +59,8 @@ class account_invoice(models.Model):
 		_logger.info("sello")
 		_logger.info(xdoc.attrib['fecha'])
 
-		xsl_root = ET.parse(config["addons_path"] + '/account_invoice_facturae/sat/cadenaoriginal_3_2.xslt')
-		xsl = ET.XSLT(xsl_root)
-		cadena_original = xsl(xdoc)
-		print(str(cadena_original))
+		cadena_original = self.get_cadena(xdoc, 'cadenaoriginal_3_2.xslt')
+
 		digest = hashlib.new('sha1', str(cadena_original)).digest()
 		sello = base64.b64encode(keys.sign(digest, "sha1"))
 		comp = xdoc.get('Comprobante')
@@ -82,8 +87,8 @@ class account_invoice(models.Model):
 			raise UserError("Namespace cfdi no definido")
 		return complemento.find('{http://www.sat.gob.mx/TimbreFiscalDigital}TimbreFiscalDigital')
 
-	def sella_timbrado(self, xml_element):
-		xsl_root = ET.parse(config["addons_path"] + '/account_invoice_facturae/sat/cadenaoriginal_3_2.xslt')
+	def get_cadena(self, xml_element, filename):
+		xsl_root = ET.parse(config["addons_path"] + '/account_invoice_facturae/sat/'+ filename)
 		xsl = ET.XSLT(xsl_root)
 		return xsl(xml_element) or ''
 
@@ -230,7 +235,7 @@ class account_invoice(models.Model):
 		certificado = timbre_fiscal.attrib['noCertificadoSAT']
 		version = timbre_fiscal.attrib['version']
 
-		cadena_timbrada = self.sella_timbrado(timbre_fiscal)
+		cadena_timbrada = self.get_cadena(timbre_fiscal, 'cadenaoriginal_TFD_1_0.xslt')
 		
 		name = invoice.company_id.vat[2:5] + "%010d" % (int(serie_folio[1]),)
 		
