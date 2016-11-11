@@ -67,18 +67,17 @@ class account_invoice(models.Model):
 		xdoc.attrib['noCertificado'] = numero_certificado
 		xdoc.attrib['certificado'] = cert
 
-		return ET.tostring(xdoc)
+		#return ET.tostring(xdoc)
 		
-		#return ET.tostring(xdoc),numero_certificado,sello,
+		return ET.tostring(xdoc),numero_certificado,sello,cadena_original
 
 	def extract_timbre_info(self, xml_string):
-		tree = ET.fromstring(xml_string)
-		root = tree.getroot()
+		root = ET.fromstring(xml_string)
 		if not 'cfdi' in root.nsmap:
 			raise UserError("Namespace cfdi no definido")
 		
 		nspace = root.nsmap['cfdi']
-		complemento = root.find( '{%s}%s' % (ns,'Complemento') )
+		complemento = root.find( '{%s}%s' % (nspace,'Complemento') )
 		if complemento is None:
 			raise UserError("Namespace cfdi no definido")
 		return complemento.find('{http://www.sat.gob.mx/TimbreFiscalDigital}TimbreFiscalDigital')
@@ -226,8 +225,8 @@ class account_invoice(models.Model):
 			raise UserError("Timbre fiscal no encontrado")
 
 		UUID = timbre_fiscal.attrib['UUID']
-		fec_emision = timbre_fiscal.attrib['FechaTimbrado']
-		sello_sat = timbre_fiscal.attrib['selloSAT']
+		fecha = timbre_fiscal.attrib['FechaTimbrado']
+		sello = timbre_fiscal.attrib['selloSAT']
 		certificado = timbre_fiscal.attrib['noCertificadoSAT']
 		version = timbre_fiscal.attrib['version']
 
