@@ -7,7 +7,7 @@
             <field name="arch" type="xml">
                 <button name="action_invoice_sent" position="after">
                     <button name="genFacturae" type="object" states="open" groups="account.group_account_invoice" class="oe_highlight" string="Timbrar Factura"  confirm="¿Estás seguro de querer timbrar la factura?"/>
-                <button name="cancelar_timbre" type="object" states="open" groups="account.group_account_invoice" class="oe_highlight" string="Cancelar Timbre"  confirm="¿En verdad deseas cancelar el timbre?"/>
+                <button name="cancelar_timbre_factura" type="object" states="open" groups="account.group_account_invoice" class="oe_highlight" string="Cancelar Timbre"  confirm="¿En verdad deseas cancelar el timbre?"/>
                 </button>
 
                 <xpath expr="//page[2]" position="after">
