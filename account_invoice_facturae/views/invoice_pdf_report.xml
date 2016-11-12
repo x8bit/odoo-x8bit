@@ -12,6 +12,16 @@
     <template id="account.report_invoice_facturae_header" inherit_id="report.external_layout_header"> <!--  primary="True" -->
         <xpath expr="//div[@class='header']" position="replace">
             <div class="header">
+                <style>
+                    p {
+                        margin-bottom: 5px;
+                    }
+                    hr {
+                        margin-top: 5px;
+                        margin-bottom: 5px;
+                        padding-bottom: 0px;
+                    }
+                </style>
                 <div class="row uppercase" style="font-size: 11px;">
                     <div class="col-xs-3">
                         <img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height: 75px; padding-left: 20px;"/>
