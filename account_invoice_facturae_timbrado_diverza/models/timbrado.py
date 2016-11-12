@@ -20,7 +20,7 @@ class account_invoice(models.Model):
 			_logger.info("r.text")
 			_logger.info(r.text)
 			#xml,UUID,fecha,sello,certificado
-			return r.text.encode("utf-8"),"UUID","fec_emision","sello_sat","certificado"
+			return r.text.encode("utf-8")
 		else:
 			raise UserError("Error al timbrar con diverza")
 
