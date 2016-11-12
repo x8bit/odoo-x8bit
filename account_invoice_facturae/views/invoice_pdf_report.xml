@@ -192,7 +192,7 @@
                             </div>
                             <div class="row ">
                                 <div class="col-xs-3" style="padding-left:0px; padding-right: 0px;">
-                                    <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('QR', o.factura_qr_cadena, 150, 150)" style="width:150px;height:150px;"/>
+                                    <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('QR', o.factura_qr_cadena, 300, 300)" style="width:155px;height:155px;"/>
                                 </div>
                                 <div class="col-xs-9" style="padding-left:0px; padding-right: 0px; margin-left: -4%; width: 79%;">
                                     <hr/>
