@@ -152,8 +152,11 @@
                         <!-- end partidas -->
                         <!-- Totales -->
                         <div class="row">
-                            <div class="col-xs-4 pull-right">
-                                <table class="table table-condensed" style="margin-bottom:0xp;">
+                            <div class="col-xs-8 text-center" style="margin-top: 60px;">
+                                 <strong>Total con letra: (<span t-field="o.amount_to_text"/>)</strong>
+                            </div>
+                            <div class="col-xs-4">
+                                <table class="table table-condensed" style="margin-bottom:0px;">
                                     <tr class="border-black">
                                         <td><strong>Subtotal</strong></td>
                                         <td class="text-right">
@@ -175,11 +178,6 @@
                                         </td>
                                     </tr>
                                 </table>
-                            </div>
-                        </div>
-                        <div class="row ">
-                            <div class="col-xs-12">
-                                <strong>Total en letra: <span t-field="o.amount_to_text"/></strong>
                             </div>
                         </div>
                         <hr/>
