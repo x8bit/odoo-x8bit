@@ -1,26 +1,30 @@
-# # -*- coding: utf-8 -*-
-# from openerp import models, fields, api
+# -*- coding: utf-8 -*-
+from openerp import models, fields, api
 
-# class FinkokConfigSettings(models.TransientModel):
-#     _inherit = 'account.config.settings'
-#     _name = 'finkok.config.settings'
+class DiverzaConfigSettings(models.TransientModel):
+	_inherit = 'account.config.settings'
+	_name = 'diverza.config.settings'
 
-#     finkok_username = fields.Char(string="Usuario de finkok")
-#     finkok_password = fields.Char(string="Contraseña de finkok")
-#     finkok_url = fields.Char(string="URL de finkok")
+	diverza_url_emision = fields.Char(string="URL de emisión")
+	diverza_url_emision_completa = fields.Char(string="URL de emisión completa")
+	diverza_url_cancelacion = fields.Char(string="URL de cancelación")
+	diverza_token = fields.Char(string="Token")
 
-#     @api.model
-#     def get_default_company_values(self, fields):
-#     	company = self.env.user.company_id
-#     	return {
-#     		'finkok_username' : company.finkok_username,
-#     		'finkok_password' : company.finkok_password,
-#     		'finkok_url' : company.finkok_url
-#     	}
 
-#     @api.one
-#     def set_company_values(self):
-#     	company = self.env.user.company_id
-#     	company.finkok_username = self.finkok_username
-#     	company.finkok_password = self.finkok_password
-#     	company.finkok_url = self.finkok_url
+	@api.model
+	def get_default_company_values(self, fields):
+		company = self.env.user.company_id
+		return {
+			'diverza_url_emision' : company.diverza_url_emision,
+			'diverza_url_emision_completa' : company.diverza_url_emision_completa,
+			'diverza_url_cancelacion' : company.diverza_url_cancelacion,
+			'diverza_token' : company.diverza_token
+		}
+
+	@api.one
+	def set_company_values(self):
+		company = self.env.user.company_id
+		company.diverza_url_emision = self.diverza_url_emision
+		company.diverza_url_emision_completa = self.diverza_url_emision_completa
+		company.diverza_url_cancelacion = self.diverza_url_cancelacion
+		company.diverza_token = self.diverza_token
