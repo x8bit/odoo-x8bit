@@ -5,6 +5,8 @@
             model="account.invoice"
             string="Factura Electronica"
             report_type="qweb-pdf"
+            attachment_use="True"
+            attachment="object.company_id.vat[2:5] + '%010d.pdf' % (int(object.number.split('-')[1]),)"
             name="account.report_invoice_facturae"
             file="account.report_invoice_facturae" />
     </data>
@@ -152,8 +154,8 @@
                         <!-- end partidas -->
                         <!-- Totales -->
                         <div class="row">
-                            <div class="col-xs-8 text-center" style="margin-top: 60px;">
-                                 <strong>Total con letra: (<span t-field="o.amount_to_text"/>)</strong>
+                            <div class="col-xs-8" style="margin-top: 44px;">
+                                 <strong>Total con letra: <br/>(<span t-field="o.amount_to_text"/>)</strong>
                             </div>
                             <div class="col-xs-4">
                                 <table class="table table-condensed" style="margin-bottom:0px;">
