@@ -5,7 +5,8 @@
         'document',
         'company_facturae_certs',
         'l10n_mx_payment_method',
-        'l10n_mx_partner_address'
+        'l10n_mx_partner_address',
+        'l10n_mx_invoice_amount_to_text'
     ],
     'author': "X8BIT SA DE CV",
     'website': 'www.x8bit.com',
