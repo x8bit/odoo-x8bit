@@ -18,7 +18,7 @@ _logger = logging.getLogger(__name__)
 class account_invoice(models.Model):
 	_inherit = 'account.invoice'
 
-	facturada = fields.Boolean(string="Invoice timbrado", readonly=True)
+	facturada = fields.Boolean(string="Invoice timbrado", copy=False, readonly=True)
 	factura_xml = fields.Many2one("ir.attachment", string="XML de la factura", readonly=True)
 	factura_pdf = fields.Many2one("ir.attachment", string="PDF de la factura", readonly=True)
 	factura_xml_download = fields.Binary(string="XML de la factura", related='factura_xml.datas')
@@ -36,41 +36,11 @@ class account_invoice(models.Model):
 	factura_cadena_timbrada = fields.Char(string="Cadena timbrada", readonly=True)
 	factura_version = fields.Char(string="Versión", readonly=True)
 
-	state = fields.Selection([
-			('draft','Draft'),
-			('proforma', 'Pro-forma'),
-			('proforma2', 'Pro-forma'),
-			('open', 'Open'),
-			('timbrada', 'Timbrada'),
-			('paid', 'Paid'),
-			('cancel', 'Cancelled'),
-		], string='Status', index=True, readonly=True, default='draft',
-		track_visibility='onchange', copy=False,
-		help=" * The 'Draft' status is used when a user is encoding a new and unconfirmed Invoice.\n"
-			" * The 'Pro-forma' status is used when the invoice does not have an invoice number.\n"
-			" * The 'Open' status is used when user creates invoice, an invoice number is generated. It stays in the open status till the user pays the invoice.\n"
-			" * The 'Timbrada' status is used when the invoice is send to sat.\n"
-			" * The 'Paid' status is set automatically when the invoice is paid. Its related journal entries may or may not be reconciled.\n"
-			" * The 'Cancelled' status is used when user cancel invoice.")
-
 	def timbrar(self, xml_base64):
 		raise UserError("No hay ningún módulo de PAC instalado")
 
 	def cancelar_timbre(self, xml_base64):
 		raise UserError("No hay ningún módulo de PAC instalado")
-
-	@api.model
-	def cancelar_timbre_factura(self, cr, uid):
-		if not self.facturada:
-			raise UserError("Invoice no timbrado")
-		invoice = self.browse(cr)
-		emisor_rfc = invoice.company_id.vat[2:]
-		uuid = self.factura_uuid
-		emisor_rfc = 'AAA010101AAA' #self.company_id.vat[2:]
-		uuid = 'f7da0c0d-2c2e-4753-9d56-b0f080252eda'#self.factura_uuid
-		if self.cancelar_timbre(emisor_rfc, uuid):
-			values = { 'state' : 'open', 'facturada' : False }
-			return invoice.write(values)
 
 	def sella_xml(self, cfdi, numero_certificado, archivo_cer, archivo_pem, now):
 		keys = RSA.load_key(archivo_pem)
@@ -116,29 +86,14 @@ class account_invoice(models.Model):
 		return xsl(xml_element) or ''
 
 	@api.multi
-	def action_cancel(self, cr, uid):
-		moves = self.env['account.move']
+	def action_cancel(self):
 		for inv in self:
-			if inv.move_id:
-				moves += inv.move_id
-			if inv.payment_move_line_ids:
-				raise UserError(_('You cannot cancel an invoice which is partially paid. You need to unreconcile related payment entries first.'))
-
-		if moves:
-			moves.button_cancel()
-			moves.unlink()
-
-		if self.facturada:
-			emisor_rfc = self.company_id.vat[2:]
-			uuid = self.factura_uuid
-			emisor_rfc = 'AAA010101AAA' #self.company_id.vat[2:]
-			uuid = 'f7da0c0d-2c2e-4753-9d56-b0f080252eda'#self.factura_uuid
-			self.cancelar_timbre(emisor_rfc, uuid)
-
-		self.write({'state': 'cancel', 'move_id': False, 'facturada' : False })
-
-		return True
-
+			if inv.facturada:
+				emisor_rfc = inv.company_id.vat[2:]
+				uuid = inv.factura_uuid
+				inv.cancelar_timbre(emisor_rfc, uuid)
+			return super(account_invoice, self).action_cancel()
+			
 	@api.model
 	def genFacturae(self, cr, uid):
 		invoice = self.browse(cr)
@@ -178,10 +133,12 @@ class account_invoice(models.Model):
 			raise UserError("Error en dirección de la compañía que esta facturando")
 
 		root.set("NumCtaPago", cta_pago)
-
-		root.set("condicionesDePago", invoice.payment_term_id.name)
-		root.set("subTotal", unicode(invoice.amount_untaxed))
-		root.set("total", unicode(invoice.amount_total))
+		try:
+			root.set("condicionesDePago", invoice.payment_term_id.name)
+			root.set("subTotal", unicode(invoice.amount_untaxed))
+			root.set("total", unicode(invoice.amount_total))
+		except TypeError:
+			raise UserError("Condiciones de pago no asignado en la factura")
 
 		emisor = ET.SubElement(root, '{%s}Emisor' % namespaces['cfdi'])
 		
@@ -300,7 +257,6 @@ class account_invoice(models.Model):
 		})
 
 		values = {
-			'state' : 'timbrada',
 			'facturada': True,
 			'factura_xml': factura_xml.id,
 			'factura_moneda' : 'PESO MXN',
@@ -317,4 +273,12 @@ class account_invoice(models.Model):
 			'factura_cadena_timbrada' : cadena_timbrada,
 		}
 
-		return invoice.write(values)
+		invoice.write(values)
+
+		return self.env['report'].get_action(self, 'account.report_invoice_facturae')
+
+	@api.multi
+	def invoice_print(self):
+		self.ensure_one()
+		self.sent = True
+		return self.env['report'].get_action(self, 'account.report_invoice_facturae')
