@@ -61,11 +61,15 @@ class account_invoice(models.Model):
 
 	@api.model
 	def cancelar_timbre_factura(self, cr, uid):
+		if not self.facturada:
+			raise UserError("Invoice no timbrado")
 		invoice = self.browse(cr)
 		emisor_rfc = invoice.company_id.vat[2:]
 		uuid = self.factura_uuid
+		emisor_rfc = 'AAA010101AAA' #self.company_id.vat[2:]
+		uuid = 'f7da0c0d-2c2e-4753-9d56-b0f080252eda'#self.factura_uuid
 		if self.cancelar_timbre(emisor_rfc, uuid):
-			values = {'state' : 'open'}
+			values = { 'state' : 'open', 'facturada' : False }
 			return invoice.write(values)
 
 	def sella_xml(self, cfdi, numero_certificado, archivo_cer, archivo_pem, now):
@@ -111,12 +115,36 @@ class account_invoice(models.Model):
 		xsl = ET.XSLT(xsl_root)
 		return xsl(xml_element) or ''
 
+	@api.multi
+	def action_cancel(self, cr, uid):
+		moves = self.env['account.move']
+		for inv in self:
+			if inv.move_id:
+				moves += inv.move_id
+			if inv.payment_move_line_ids:
+				raise UserError(_('You cannot cancel an invoice which is partially paid. You need to unreconcile related payment entries first.'))
+
+		if moves:
+			moves.button_cancel()
+			moves.unlink()
+
+		if self.facturada:
+			emisor_rfc = self.company_id.vat[2:]
+			uuid = self.factura_uuid
+			emisor_rfc = 'AAA010101AAA' #self.company_id.vat[2:]
+			uuid = 'f7da0c0d-2c2e-4753-9d56-b0f080252eda'#self.factura_uuid
+			self.cancelar_timbre(emisor_rfc, uuid)
+
+		self.write({'state': 'cancel', 'move_id': False, 'facturada' : False })
+
+		return True
+
 	@api.model
 	def genFacturae(self, cr, uid):
 		invoice = self.browse(cr)
 
-		# if invoice.facturada:
-		# 	raise UserError("Invoice ya timbrado")
+		if invoice.facturada:
+			raise UserError("Invoice ya timbrado")
 
 		tz_name = uid['tz'] or 'America/Monterrey'
 		user_tz = pytz.timezone(tz_name)
@@ -135,7 +163,6 @@ class account_invoice(models.Model):
 		root.set("folio", serie_folio[1])
 		root.set("formaDePago", "PAGO EN UNA SOLA EXHIBICION")
 		root.set("Moneda", "PESO MXN")
-		#root.set("Moneda", "DOLAR USD")
 		root.set("tipoDeComprobante", "ingreso")
 
 		try:
