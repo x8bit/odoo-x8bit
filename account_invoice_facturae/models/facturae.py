@@ -36,6 +36,23 @@ class account_invoice(models.Model):
 	factura_cadena_timbrada = fields.Char(string="Cadena timbrada", readonly=True)
 	factura_version = fields.Char(string="Versión", readonly=True)
 
+	state = fields.Selection([
+			('draft','Draft'),
+			('proforma', 'Pro-forma'),
+			('proforma2', 'Pro-forma'),
+			('open', 'Open'),
+			('timbrada', 'Timbrada'),
+			('paid', 'Paid'),
+			('cancel', 'Cancelled'),
+		], string='Status', index=True, readonly=True, default='draft',
+		track_visibility='onchange', copy=False,
+		help=" * The 'Draft' status is used when a user is encoding a new and unconfirmed Invoice.\n"
+			" * The 'Pro-forma' status is used when the invoice does not have an invoice number.\n"
+			" * The 'Open' status is used when user creates invoice, an invoice number is generated. It stays in the open status till the user pays the invoice.\n"
+			" * The 'Timbrada' status is used when the invoice is send to sat.\n"
+			" * The 'Paid' status is set automatically when the invoice is paid. Its related journal entries may or may not be reconciled.\n"
+			" * The 'Cancelled' status is used when user cancel invoice.")
+
 	def timbrar(self, xml_base64):
 		raise UserError("No hay ningún módulo de PAC instalado")
 
@@ -47,7 +64,9 @@ class account_invoice(models.Model):
 		invoice = self.browse(cr)
 		emisor_rfc = 'AAA010101AAA' #invoice.company_id.vat[2:]
 		uuid = 'f7da0c0d-2c2e-4753-9d56-b0f080252eda' #self.factura_uuid
-		self.cancelar_timbre(emisor_rfc, uuid)
+		if self.cancelar_timbre(emisor_rfc, uuid):
+			values = {'state' : 'open'}
+			return invoice.write(values)
 
 	def sella_xml(self, cfdi, numero_certificado, archivo_cer, archivo_pem, now):
 		keys = RSA.load_key(archivo_pem)
@@ -254,6 +273,7 @@ class account_invoice(models.Model):
 		})
 
 		values = {
+			'state' : 'timbrada',
 			'facturada': True,
 			'factura_xml': factura_xml.id,
 			'factura_moneda' : 'PESO MXN',
