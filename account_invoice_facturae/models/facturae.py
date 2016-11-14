@@ -62,8 +62,8 @@ class account_invoice(models.Model):
 	@api.model
 	def cancelar_timbre_factura(self, cr, uid):
 		invoice = self.browse(cr)
-		emisor_rfc = 'AAA010101AAA' #invoice.company_id.vat[2:]
-		uuid = 'f7da0c0d-2c2e-4753-9d56-b0f080252eda' #self.factura_uuid
+		emisor_rfc = invoice.company_id.vat[2:]
+		uuid = self.factura_uuid
 		if self.cancelar_timbre(emisor_rfc, uuid):
 			values = {'state' : 'open'}
 			return invoice.write(values)
