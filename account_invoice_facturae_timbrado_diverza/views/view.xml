@@ -1,6 +1,6 @@
 <openerp>
 	<data>
-		<record id="parameters_finkok" model="ir.ui.view">
+		<record id="parameters_diverza" model="ir.ui.view">
 			<field name="name">Parametros Diverza</field>
 			<field name="model">diverza.config.settings</field>
 			<field name="arch" type="xml">

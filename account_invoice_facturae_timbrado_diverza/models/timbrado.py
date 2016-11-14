@@ -12,21 +12,22 @@ class account_invoice(models.Model):
 	_inherit = 'account.invoice'
 
 	def timbrar(self, xml_base64):
+		company = self.env.user.company_id
 		xml_str = base64.b64decode(xml_base64)
-		url = 'https://staging.diverza.com/stamp/complete'
-		headers = {"x-auth-token": "ABCD1234"}
+		url = company.diverza_url_emision_completa
+		headers = { "x-auth-token": company.diverza_token }
 		r = requests.post(url, headers=headers, data=xml_str)
 		if r.status_code == requests.codes.ok:
 			_logger.info("r.text")
 			_logger.info(r.text)
-			#xml,UUID,fecha,sello,certificado
 			return r.text.encode("utf-8")
 		else:
 			raise UserError("Error al timbrar con diverza")
 
 	def cancelar_timbre(self, emisor_rfc, uuid):
-		url = 'https://staging.diverza.com/stamp/cancel/%s/%s' % (emisor_rfc, uuid)
-		headers = {"x-auth-token": "ABCD1234"}
+		company = self.env.user.company_id
+		url = '%s/%s/%s' % (company.diverza_url_cancelacion,emisor_rfc, uuid)
+		headers = { "x-auth-token": company.diverza_token }
 		r = requests.post(url, headers=headers)
 		_logger.info("r")
 		_logger.info(r)
